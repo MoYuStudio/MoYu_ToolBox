@@ -6,7 +6,7 @@ import sys
 import pyautogui
 import keyboard
 
-import keyboard
+import json_driver
 import listener
 
 json文件路径 = 'setting.json'
