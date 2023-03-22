@@ -27,7 +27,6 @@ while True:
             记录器 = listener.记录器()
             记录器.运行()
         if 键.name == 'a': 
-            print('run')
             数据 = json_driver.json文件读取(输入存档路径)
             执行器 = clicker.执行器(数据)
             执行器.运行()

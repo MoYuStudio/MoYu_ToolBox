@@ -9,6 +9,7 @@ class 执行器:
         self.计时器 = 0
 
     def 运行(self):
+        print('开始模仿')
         for 事件id in range(len(self.输入事件['输入事件'])):
             事件 = self.输入事件['输入事件'][事件id]
             if 事件[0] == '鼠标移动':
@@ -58,3 +59,5 @@ class 执行器:
                 pyautogui.press(key)
             elif 事件[0] == '键盘释放':
                 pass
+            
+        print('结束模仿')
