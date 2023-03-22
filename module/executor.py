@@ -31,7 +31,6 @@ class Executor:
                 if button == 'Button.left':
                     if action == 'mouse_press':
                         pyautogui.mouseDown(x, y, button='left')
-                        print('click')
                     else:
                         pyautogui.mouseUp(x, y, button='left')
                 elif button == 'Button.right':

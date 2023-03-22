@@ -11,9 +11,9 @@ from tkinter import *
 
 import pyautogui
 
-import json_driver
-import recorder
-import executor
+import module.json_driver as json_driver
+import module.recorder as recorder
+import module.executor as executor
 
 def start_recording(recorder_obj):
     recorder_obj.recording = True
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     threading1 = threading.Thread(target=recorder_obj.run)
     threading1.start()
     
-    data = json_driver.json_read('user.json')
+    data = json_driver.json_read('data/user.json')
     executor_obj = executor.Executor(data)
     
     root = tk.Tk()

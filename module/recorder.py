@@ -3,8 +3,6 @@ import datetime
 
 from pynput import mouse, keyboard
 
-import json_driver
-
 class Recorder:
     def __init__(self):
         self.recording = False
