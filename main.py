@@ -8,6 +8,7 @@ import keyboard
 
 import json_driver
 import listener
+import clicker
 
 json文件路径 = 'setting.json'
 
@@ -24,8 +25,11 @@ while True:
     if key.event_type == keyboard.KEY_DOWN:
         if key.name == 'f12':
             记录器 = listener.记录器()
-            记录器.开始()
+            记录器.运行()
         if key.name == 'a':
             print('run')
+            数据 = json_driver.json文件读取('user.json')
+            执行器 = clicker.执行器(数据)
+            执行器.运行()
 
 sys.exit(0)
