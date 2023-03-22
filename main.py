@@ -23,9 +23,11 @@ while True:
     键 = keyboard.read_event()
     
     if 键.event_type == keyboard.KEY_DOWN:
+        print(键.name)
         if 键.name == 'f12': 
             记录器 = listener.记录器()
             记录器.运行()
+                  
         if 键.name == 'a': 
             数据 = json_driver.json文件读取(输入存档路径)
             执行器 = clicker.执行器(数据)
