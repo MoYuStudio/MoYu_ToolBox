@@ -15,7 +15,7 @@ print(' === The Imitation Game 模仿游戏 === ')
 print('      Develop BY WilsonVinson       ')
 print('')
 print('           按下F12 开始学习           ')
-print('            按下1 开始模仿            ')
+print('            按下a 开始模仿            ')
 print('')
 
 while True:
