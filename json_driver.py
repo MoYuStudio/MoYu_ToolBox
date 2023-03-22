@@ -1,11 +1,12 @@
 
 import json
 
-def json文件读取(json文件路径):
-    with open(json文件路径) as 文件:
-        数据 = json.load(文件)
-    return 数据
+def json_read(file_path):
+    with open(file_path) as f:
+        data = json.load(f)
+    return data
 
-def json文件写入(json文件路径,写入数据):
-    with open(json文件路径, 'w') as 文件:
-        json.dump(写入数据, 文件)
+def json_write(file_path, data_to_write):
+    with open(file_path, 'w') as f:
+        json.dump(data_to_write, f)
+        

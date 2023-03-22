@@ -10,12 +10,12 @@ class 执行器:
 
     def 运行(self):
         print('开始模仿')
-        for 事件id in range(len(self.输入事件['输入事件'])):
-            事件 = self.输入事件['输入事件'][事件id]
+        for 事件id in range(len(self.输入事件['input event'])):
+            事件 = self.输入事件['input event'][事件id]
             if 事件[0] == '鼠标移动':
                 x, y = 事件[1], 事件[2]
                 try:
-                    延迟 = 事件[3] - self.输入事件['输入事件'][事件id-1][3]
+                    延迟 = 事件[3] - self.输入事件['input event'][事件id-1][3]
                     time.sleep(max(0, 延迟))
                 except:
                     pass
@@ -25,7 +25,7 @@ class 执行器:
                 button = str(事件[3])
                 action = 事件[4]
                 try:
-                    延迟 = 事件[5] - self.输入事件['输入事件'][事件id-1][5]
+                    延迟 = 事件[5] - self.输入事件['input event'][事件id-1][5]
                     time.sleep(max(0, 延迟))
                 except:
                     pass
@@ -42,7 +42,7 @@ class 执行器:
             elif 事件[0] == '鼠标滚动':
                 dx, dy = 事件[3], 事件[4]
                 try:
-                    延迟 = 事件[5] - self.输入事件['输入事件'][事件id-1][5]
+                    延迟 = 事件[5] - self.输入事件['input event'][事件id-1][5]
                     time.sleep(max(0, 延迟))
                 except:
                     pass
@@ -52,7 +52,7 @@ class 执行器:
                 if key == 'Key.space':
                     key = 'space'
                 try:
-                    延迟 = 事件[3] - self.输入事件['输入事件'][事件id-1][3]
+                    延迟 = 事件[3] - self.输入事件['input event'][事件id-1][3]
                     time.sleep(max(0, 延迟))
                 except:
                     pass
