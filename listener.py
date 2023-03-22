@@ -51,12 +51,12 @@ class 记录器:
         try:
             if key == keyboard.Key.f12:
                 if not self.正在记录:
-                    print('开始记录')
+                    print('开始学习')
                     self.输入事件.clear()
                     self.开始时间 = datetime.datetime.now()
                     self.正在记录 = True
                 else:
-                    print('停止记录')
+                    print('结束学习')
                     self.正在记录 = False
                     写入数据 = {'输入事件':self.输入事件}
                     json_driver.json文件写入('user.json',写入数据)
