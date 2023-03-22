@@ -22,7 +22,7 @@ while True:
     key = keyboard.read_event()
     
     if key.event_type == keyboard.KEY_DOWN:
-        if key.name == 'f12':
+        if key.name == 'f12': 
             记录器 = listener.记录器()
             记录器.运行()
         if key.name == 'a':
