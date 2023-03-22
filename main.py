@@ -34,7 +34,10 @@ def stop_recording(recorder_obj, status_label_var, file_name_entry):
     json_driver.json_write(f'data/{file_name}.json', data)
     status_label_var.set('就绪')
 
-def start_execution(executor_obj, status_label_var):
+def start_execution(status_label_var):
+    file_name = file_name_entry.get()
+    data = json_driver.json_read(f'data/{file_name}.json')
+    executor_obj = executor.Executor(data)
     threading2 = threading.Thread(target=executor_obj.run)
     threading2.start()
     status_label_var.set('执行中')
@@ -51,13 +54,6 @@ if __name__ == '__main__':
     threading1 = threading.Thread(target=recorder_obj.run)
     threading1.start()
     
-    try:
-        data = json_driver.json_read('data/user.json')
-    except:
-        json_driver.json_write(f'data/user.json', {'input_event': []})
-        data = json_driver.json_read('data/user.json')
-    executor_obj = executor.Executor(data)
-    
     # root = tk.Tk()
     style = Style(theme='minty')# python -m ttkbootstrap
     root = style.master
@@ -72,13 +68,6 @@ if __name__ == '__main__':
     custom_font_0 = font.Font(family='黑体', size=12)#, weight='bold'
     custom_font_1 = font.Font(family='黑体', size=9)
     custom_font_2 = font.Font(family='黑体', size=24)
-    
-    #button_style = ttk.Style()
-    #button_style.configure('Custom.TButton', font=custom_font_0, background='#80CBC4', foreground='#FFFFFF')
-    #button_style.map('Custom.TButton', background=[('active', '#4DB6AC'), ('pressed', '#009688')])
-
-    #button_frame = ttk.Frame(root)
-    #button_frame.grid(row=3, column=0, columnspan=2, pady=10)
 
     screen_width, screen_height = pyautogui.size()
     
@@ -114,7 +103,7 @@ if __name__ == '__main__':
     stop_button = Button(root, text='结束记录',width=15, height=2, font=custom_font_0, command=lambda: stop_recording(recorder_obj, status_label_var, file_name_entry))
     stop_button.place(x=300, y=200)
 
-    execute_button = Button(root, text='开始执行',width=15, height=2, font=custom_font_0, command=lambda: start_execution(executor_obj, status_label_var))
+    execute_button = Button(root, text='开始执行',width=15, height=2, font=custom_font_0, command=lambda: start_execution(status_label_var))
     execute_button.place(x=25, y=300)
 
     clear_button = Button(root, text='清空记录',width=15, height=2, font=custom_font_0, command=lambda: clear_records(recorder_obj))
