@@ -9,7 +9,8 @@ import json_driver
 import listener
 import clicker
 
-json文件路径 = 'setting.json'
+设置配置路径 = 'setting.json'
+输入存档路径 = 'user.json'
 
 print(' === The Imitation Game 模仿游戏 === ')
 print('      Develop BY WilsonVinson       ')
@@ -19,15 +20,15 @@ print('            按下a 开始模仿            ')
 print('')
 
 while True:
-    key = keyboard.read_event()
+    键 = keyboard.read_event()
     
-    if key.event_type == keyboard.KEY_DOWN:
-        if key.name == 'f12': 
+    if 键.event_type == keyboard.KEY_DOWN:
+        if 键.name == 'f12': 
             记录器 = listener.记录器()
             记录器.运行()
-        if key.name == 'a':
+        if 键.name == 'a': 
             print('run')
-            数据 = json_driver.json文件读取('user.json')
+            数据 = json_driver.json文件读取(输入存档路径)
             执行器 = clicker.执行器(数据)
             执行器.运行()
 
