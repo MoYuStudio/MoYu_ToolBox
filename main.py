@@ -3,7 +3,6 @@
 
 import sys
 
-import pyautogui
 import keyboard
 
 import json_driver
