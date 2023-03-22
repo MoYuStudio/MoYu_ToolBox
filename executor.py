@@ -9,9 +9,8 @@ class Executor:
         self.timer = 0
 
     def run(self):
-        for event_id in range(1,len(self.input_events['input_event'])-1):
+        for event_id in range(0,len(self.input_events['input_event'])-2):
             event = self.input_events['input_event'][event_id]
-            print(event)
             if event[0] == 'mouse_move':
                 x, y = event[1], event[2]
                 try:
@@ -32,6 +31,7 @@ class Executor:
                 if button == 'Button.left':
                     if action == 'mouse_press':
                         pyautogui.mouseDown(x, y, button='left')
+                        print('click')
                     else:
                         pyautogui.mouseUp(x, y, button='left')
                 elif button == 'Button.right':
