@@ -82,6 +82,8 @@ if __name__ == '__main__':
     
     notebook.add(page1, text="主页")
     notebook.add(page2, text="自动化")
+    notebook.add(page4, text="下载")
+    notebook.add(page5, text="设置")
     notebook.add(page6, text="关于")
     notebook.place(x=0, y=0)
     
@@ -90,15 +92,15 @@ if __name__ == '__main__':
     image_file = Image.open("icon_x500.png")
     tk_image = ImageTk.PhotoImage(image_file)
     icon_label = tk.Label(page6, image=tk_image)
-    icon_label.place(x=5, y=5)
+    icon_label.place(x=250, y=100)
     icon_label.config(bg=page6['bg'])
     
     title_label = Label(page6, text='MoYu ToolBox', font=custom_font_2)
-    title_label.place(x=95, y=200)
+    title_label.place(x=150, y=250)
     title_label.config(bg=page6['bg'])
     
-    copyright_label = Label(page6, text='Power BY ChatGPT   Develop BY WilsonVinson', font=custom_font_1)
-    copyright_label.place(x=100, y=560)
+    copyright_label = Label(page6, text='Powered BY ChatGPT   Developed BY WilsonVinson', font=custom_font_1)
+    copyright_label.place(x=100, y=500)
     copyright_label.config(bg=page6['bg'])
     
     monitor_var = IntVar(value=0)
