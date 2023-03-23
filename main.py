@@ -81,7 +81,7 @@ if __name__ == '__main__':
     root.attributes("-alpha", 0.95)
     
     notebook.add(page1, text="主页")
-    notebook.add(page2, text="点击器")
+    notebook.add(page2, text="自动化")
     notebook.add(page6, text="关于")
     notebook.place(x=0, y=0)
     
