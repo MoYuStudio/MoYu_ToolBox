@@ -10,10 +10,11 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from tkinter import font
-from ttkbootstrap import Style
 
 import pyautogui
 from PIL import Image, ImageTk
+from ttkbootstrap import Style
+import screeninfo
 
 import module.json_driver as json_driver
 import module.recorder as recorder
@@ -40,7 +41,6 @@ def start_execution(status_label_var):
         file_name = 'user'
     data = json_driver.json_read(f'data/{file_name}.json')
     loop_count = loop_var.get()
-    print(loop_count)
     executor_obj = executor.Executor(data, loop_count)
     threading2 = threading.Thread(target=executor_obj.run)
     threading2.start()
@@ -73,7 +73,7 @@ if __name__ == '__main__':
     custom_font_1 = font.Font(family='黑体', size=9)
     custom_font_2 = font.Font(family='黑体', size=24)
 
-    screen_width, screen_height = pyautogui.size()
+    monitors = screeninfo.get_monitors()
     
     image_file = Image.open("icon_x500.png")
     tk_image = ImageTk.PhotoImage(image_file)
@@ -84,10 +84,14 @@ if __name__ == '__main__':
     title_label = Label(root, text='AutoClick 自动点击器', font=custom_font_2)
     title_label.place(x=95, y=25)
     title_label.config(bg=root['bg'])
-        
-    label1 = Label(root, text=('屏幕分辨率 '+str(screen_width)+'x'+str(screen_height)), font=custom_font_0)
-    label1.place(x=25, y=100)
-    label1.config(bg=root['bg'])
+    
+    monitor_var = IntVar(value=0)
+    monitor_spinbox = Spinbox(root, from_=0, to=len(monitors), width=1, font=custom_font_0, textvariable=monitor_var)
+    monitor_spinbox.place(x=25, y=100)
+    
+    monitorl_abel = Label(root, text=('屏幕分辨率 '+str(monitors[monitor_var.get()].width)+'x'+str(monitors[monitor_var.get()].height)), font=custom_font_0)
+    monitorl_abel.place(x=65, y=100)
+    monitorl_abel.config(bg=root['bg'])
     
     status_label_var = StringVar()
     status_label_var.set('就绪')
