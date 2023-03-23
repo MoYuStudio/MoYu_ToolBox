@@ -62,72 +62,83 @@ if __name__ == '__main__':
     style = Style(theme='minty')# python -m ttkbootstrap
     root = style.master
     
-    root.title('AutoClicker 自动点击器')
+    notebook = ttk.Notebook(root)
+    
+    page1 = tk.Frame(notebook)
+    page2 = tk.Frame(notebook)
+    
+    custom_font_0 = font.Font(family='黑体', size=12)#, weight='bold'
+    custom_font_1 = font.Font(family='黑体', size=9)
+    custom_font_2 = font.Font(family='黑体', size=24)
+    
+    root.title('MoYu ToolBox 摸鱼工具箱')
     root.iconbitmap("icon.ico")
     root.geometry("600x600")
     root.resizable(False, False)
     root.configure(bg='#F0F0F0')
     root.attributes("-alpha", 0.95)
     
-    custom_font_0 = font.Font(family='黑体', size=12)#, weight='bold'
-    custom_font_1 = font.Font(family='黑体', size=9)
-    custom_font_2 = font.Font(family='黑体', size=24)
-
+    notebook.add(page1, text="主页")
+    notebook.add(page2, text="点击器")
+    notebook.place(x=0, y=0)
+    
     monitors = screeninfo.get_monitors()
     
     image_file = Image.open("icon_x500.png")
     tk_image = ImageTk.PhotoImage(image_file)
-    icon_label = tk.Label(root, image=tk_image)
+    icon_label = tk.Label(page1, image=tk_image)
     icon_label.place(x=5, y=5)
-    icon_label.config(bg=root['bg'])
+    icon_label.config(bg=page1['bg'])
     
-    title_label = Label(root, text='AutoClick 自动点击器', font=custom_font_2)
+    title_label = Label(page1, text='MoYu ToolBox', font=custom_font_2)
     title_label.place(x=95, y=25)
-    title_label.config(bg=root['bg'])
+    title_label.config(bg=page1['bg'])
     
     monitor_var = IntVar(value=0)
-    monitor_spinbox = Spinbox(root, from_=0, to=len(monitors), width=1, font=custom_font_0, textvariable=monitor_var)
+    monitor_spinbox = Spinbox(page2, from_=0, to=len(monitors), width=1, font=custom_font_0, textvariable=monitor_var)
     monitor_spinbox.place(x=25, y=100)
     
-    monitorl_abel = Label(root, text=('屏幕分辨率 '+str(monitors[monitor_var.get()].width)+'x'+str(monitors[monitor_var.get()].height)), font=custom_font_0)
+    monitorl_abel = Label(page2, text=('屏幕分辨率 '+str(monitors[monitor_var.get()].width)+'x'+str(monitors[monitor_var.get()].height)), font=custom_font_0)
     monitorl_abel.place(x=65, y=100)
-    monitorl_abel.config(bg=root['bg'])
+    monitorl_abel.config(bg=page2['bg'])
     
     status_label_var = StringVar()
     status_label_var.set('就绪')
-    status_label = Label(root, textvariable=status_label_var, bd=1, relief=SUNKEN, anchor=W, font=custom_font_0)
+    status_label = Label(page2, textvariable=status_label_var, bd=1, relief=SUNKEN, anchor=W, font=custom_font_0)
     status_label.place(x=500, y=100)
     
-    file_name_label = Label(root, text='输入文件名(默认user):', font=custom_font_0)
+    file_name_label = Label(page2, text='输入文件名(默认user):', font=custom_font_0)
     file_name_label.place(x=25, y=150)
-    file_name_label.config(bg=root['bg'])
+    file_name_label.config(bg=page2['bg'])
     
-    file_name_entry = Entry(root, width=24)
+    file_name_entry = Entry(page2, width=24)
     file_name_entry.place(x=300, y=150)
 
-    record_button = Button(root, text='开始记录',width=15, height=2, font=custom_font_0, command=lambda: start_recording(recorder_obj, status_label_var))
+    record_button = Button(page2, text='开始记录',width=15, height=2, font=custom_font_0, command=lambda: start_recording(recorder_obj, status_label_var))
     record_button.place(x=25, y=200)
 
-    stop_button = Button(root, text='结束记录',width=15, height=2, font=custom_font_0, command=lambda: stop_recording(recorder_obj, status_label_var, file_name_entry))
+    stop_button = Button(page2, text='结束记录',width=15, height=2, font=custom_font_0, command=lambda: stop_recording(recorder_obj, status_label_var, file_name_entry))
     stop_button.place(x=300, y=200)
     
-    loop_label = Label(root, text='循环次数(-1无限循环)：', font=custom_font_0)
+    loop_label = Label(page2, text='循环次数(-1无限循环):', font=custom_font_0)
     loop_label.place(x=25, y=290)
-    loop_label.config(bg=root['bg'])
+    loop_label.config(bg=page2['bg'])
 
     loop_var = IntVar(value=1)
-    loop_spinbox = Spinbox(root, from_=-1, to=1000, width=21, font=custom_font_0, textvariable=loop_var)
+    loop_spinbox = Spinbox(page2, from_=-1, to=1000, width=21, font=custom_font_0, textvariable=loop_var)
     loop_spinbox.place(x=300, y=290)
 
-    execute_button = Button(root, text='开始执行',width=15, height=2, font=custom_font_0, command=lambda: start_execution(status_label_var))
+    execute_button = Button(page2, text='开始执行',width=15, height=2, font=custom_font_0, command=lambda: start_execution(status_label_var))
     execute_button.place(x=25, y=350)
 
-    clear_button = Button(root, text='清空记录',width=15, height=2, font=custom_font_0, command=lambda: clear_records(recorder_obj))
+    clear_button = Button(page2, text='清空记录',width=15, height=2, font=custom_font_0, command=lambda: clear_records(recorder_obj))
     clear_button.place(x=300, y=350)
     
     copyright_label = Label(root, text='Power BY ChatGPT   Develop BY WilsonVinson', font=custom_font_1)
     copyright_label.place(x=100, y=560)
-    copyright_label.config(bg=root['bg'])
+    copyright_label.config(bg=page1['bg'])
+
+    notebook.pack(expand=True, fill="both")
 
     root.protocol("WM_DELETE_WINDOW", on_closing)
 
