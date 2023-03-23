@@ -87,7 +87,7 @@ if __name__ == '__main__':
         
         page_home = tk.Frame(notebook)
         page_auto = tk.Frame(notebook)
-        page3 = tk.Frame(notebook)
+        page_mc = tk.Frame(notebook)
         page4 = tk.Frame(notebook)
         page5 = tk.Frame(notebook)
         page_about = tk.Frame(notebook)
@@ -108,6 +108,7 @@ if __name__ == '__main__':
         
         notebook.add(page_home, text="主页")
         notebook.add(page_auto, text="自动化")
+        notebook.add(page_mc, text="MC")
         notebook.add(page4, text="下载")
         notebook.add(page5, text="设置")
         notebook.add(page_about, text="关于")
