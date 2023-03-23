@@ -90,8 +90,6 @@ if __name__ == '__main__':
     notebook.add(page_about, text="关于")
     notebook.place(x=0, y=0)
     
-    
-    
     def page_auto_group():
         global loop_var
         
