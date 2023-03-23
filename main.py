@@ -36,6 +36,8 @@ def stop_recording(recorder_obj, status_label_var, file_name_entry):
 
 def start_execution(status_label_var):
     file_name = file_name_entry.get()
+    if not file_name:
+        file_name = 'user'
     data = json_driver.json_read(f'data/{file_name}.json')
     executor_obj = executor.Executor(data)
     threading2 = threading.Thread(target=executor_obj.run)
