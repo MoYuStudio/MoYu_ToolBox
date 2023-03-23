@@ -66,6 +66,10 @@ if __name__ == '__main__':
     
     page1 = tk.Frame(notebook)
     page2 = tk.Frame(notebook)
+    page3 = tk.Frame(notebook)
+    page4 = tk.Frame(notebook)
+    page5 = tk.Frame(notebook)
+    page6 = tk.Frame(notebook)
     
     custom_font_0 = font.Font(family='黑体', size=12)#, weight='bold'
     custom_font_1 = font.Font(family='黑体', size=9)
@@ -80,19 +84,24 @@ if __name__ == '__main__':
     
     notebook.add(page1, text="主页")
     notebook.add(page2, text="点击器")
+    notebook.add(page6, text="关于")
     notebook.place(x=0, y=0)
     
     monitors = screeninfo.get_monitors()
     
     image_file = Image.open("icon_x500.png")
     tk_image = ImageTk.PhotoImage(image_file)
-    icon_label = tk.Label(page1, image=tk_image)
+    icon_label = tk.Label(page6, image=tk_image)
     icon_label.place(x=5, y=5)
-    icon_label.config(bg=page1['bg'])
+    icon_label.config(bg=page6['bg'])
     
-    title_label = Label(page1, text='MoYu ToolBox', font=custom_font_2)
+    title_label = Label(page6, text='MoYu ToolBox', font=custom_font_2)
     title_label.place(x=95, y=200)
-    title_label.config(bg=page1['bg'])
+    title_label.config(bg=page6['bg'])
+    
+    copyright_label = Label(page6, text='Power BY ChatGPT   Develop BY WilsonVinson', font=custom_font_1)
+    copyright_label.place(x=100, y=560)
+    copyright_label.config(bg=page6['bg'])
     
     monitor_var = IntVar(value=0)
     monitor_spinbox = Spinbox(page2, from_=0, to=len(monitors), width=1, font=custom_font_0, textvariable=monitor_var)
@@ -133,10 +142,6 @@ if __name__ == '__main__':
 
     clear_button = Button(page2, text='清空记录',width=15, height=2, font=custom_font_0, command=lambda: clear_records(recorder_obj))
     clear_button.place(x=300, y=350)
-    
-    copyright_label = Label(root, text='Power BY ChatGPT   Develop BY WilsonVinson', font=custom_font_1)
-    copyright_label.place(x=100, y=560)
-    copyright_label.config(bg=page1['bg'])
 
     notebook.pack(expand=True, fill="both")
 
