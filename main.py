@@ -22,6 +22,9 @@ import module.executor as executor
 run = True
 
 def start_recording(recorder_obj, status_label_var):
+    global threading1
+    threading1 = threading.Thread(target=recorder_obj.run)
+    threading1.start()
     recorder_obj.recording = True
     recorder_obj.events.clear()
     recorder_obj.start_time = datetime.datetime.now()
@@ -61,16 +64,20 @@ def on_closing():
     global run
     root.destroy()
     run = False
-    threading1.join()
-    threading2.join()
+    try:
+        threading1.join()
+    except:
+        pass
+    try:
+        threading2.join()
+    except:
+        pass
 
 if __name__ == '__main__':
     
     while run:
     
         recorder_obj = recorder.Recorder()
-        threading1 = threading.Thread(target=recorder_obj.run)
-        threading1.start()
         
         # root = tk.Tk()
         style = Style(theme='darkly')# python -m ttkbootstrap
