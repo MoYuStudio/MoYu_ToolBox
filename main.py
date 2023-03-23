@@ -33,7 +33,7 @@ def stop_recording(recorder_obj, status_label_var, file_name_entry):
     json_driver.json_write(f'data/{file_name}.json', data)
     status_label_var.set('就绪')
 
-def start_execution(status_label_var):
+def start_execution(status_label_var,file_name_entry):
     file_name = file_name_entry.get()
     if not file_name:
         file_name = 'user'
@@ -73,11 +73,11 @@ if __name__ == '__main__':
     custom_font_1 = font.Font(family='黑体', size=9)
     custom_font_2 = font.Font(family='黑体', size=24)
     
-    image_file = Image.open("icon_x500.png")
+    image_file = Image.open("icon/icon_x500.png")
     tk_image = ImageTk.PhotoImage(image_file)
     
     root.title('MoYu ToolBox 摸鱼工具箱')
-    root.iconbitmap("icon.ico")
+    root.iconbitmap("icon/icon.ico")
     root.geometry("600x600")
     # root.resizable(False, False)
     root.configure(bg='#F0F0F0')
@@ -94,6 +94,8 @@ if __name__ == '__main__':
     print(monitors)
     
     def page_auto_group():
+        global loop_var
+        
         monitor_var = IntVar(value=0)
         monitor_spinbox = Spinbox(page_auto, from_=0, to=len(monitors), width=1, font=custom_font_0, textvariable=monitor_var)
         monitor_spinbox.place(x=25, y=100)
@@ -128,7 +130,7 @@ if __name__ == '__main__':
         loop_spinbox = Spinbox(page_auto, from_=-1, to=1000, width=21, font=custom_font_0, textvariable=loop_var)
         loop_spinbox.place(x=300, y=290)
 
-        execute_button = Button(page_auto, text='开始执行',width=15, height=2, font=custom_font_0, command=lambda: start_execution(status_label_var))
+        execute_button = Button(page_auto, text='开始执行',width=15, height=2, font=custom_font_0, command=lambda: start_execution(status_label_var,file_name_entry))
         execute_button.place(x=25, y=350)
 
         clear_button = Button(page_auto, text='清空记录',width=15, height=2, font=custom_font_0, command=lambda: clear_records(recorder_obj))
