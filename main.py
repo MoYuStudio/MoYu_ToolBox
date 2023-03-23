@@ -39,7 +39,9 @@ def start_execution(status_label_var):
     if not file_name:
         file_name = 'user'
     data = json_driver.json_read(f'data/{file_name}.json')
-    executor_obj = executor.Executor(data)
+    loop_count = loop_var.get()
+    print(loop_count)
+    executor_obj = executor.Executor(data, loop_count)
     threading2 = threading.Thread(target=executor_obj.run)
     threading2.start()
     status_label_var.set('执行中')
@@ -92,24 +94,32 @@ if __name__ == '__main__':
     status_label = Label(root, textvariable=status_label_var, bd=1, relief=SUNKEN, anchor=W, font=custom_font_0)
     status_label.place(x=500, y=100)
     
-    file_name_label = Label(root, text='输入文件名（可选）:', font=custom_font_0)
+    file_name_label = Label(root, text='输入文件名(默认user):', font=custom_font_0)
     file_name_label.place(x=25, y=150)
     file_name_label.config(bg=root['bg'])
     
-    file_name_entry = Entry(root, width=26)
-    file_name_entry.place(x=270, y=150)
+    file_name_entry = Entry(root, width=24)
+    file_name_entry.place(x=300, y=150)
 
     record_button = Button(root, text='开始记录',width=15, height=2, font=custom_font_0, command=lambda: start_recording(recorder_obj, status_label_var))
     record_button.place(x=25, y=200)
 
     stop_button = Button(root, text='结束记录',width=15, height=2, font=custom_font_0, command=lambda: stop_recording(recorder_obj, status_label_var, file_name_entry))
     stop_button.place(x=300, y=200)
+    
+    loop_label = Label(root, text='循环次数(-1无限循环)：', font=custom_font_0)
+    loop_label.place(x=25, y=290)
+    loop_label.config(bg=root['bg'])
+
+    loop_var = IntVar(value=1)
+    loop_spinbox = Spinbox(root, from_=-1, to=1000, width=21, font=custom_font_0, textvariable=loop_var)
+    loop_spinbox.place(x=300, y=290)
 
     execute_button = Button(root, text='开始执行',width=15, height=2, font=custom_font_0, command=lambda: start_execution(status_label_var))
-    execute_button.place(x=25, y=300)
+    execute_button.place(x=25, y=350)
 
     clear_button = Button(root, text='清空记录',width=15, height=2, font=custom_font_0, command=lambda: clear_records(recorder_obj))
-    clear_button.place(x=300, y=300)
+    clear_button.place(x=300, y=350)
     
     copyright_label = Label(root, text='Power BY ChatGPT   Develop BY WilsonVinson', font=custom_font_1)
     copyright_label.place(x=100, y=560)
