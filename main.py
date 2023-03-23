@@ -1,7 +1,6 @@
 
-# ===         AutoClick          ===
-# === The Imitation Game 模仿游戏 ===
-#      Develop BY WilsonVinson      
+# === MoYuToolBox 摸鱼工具箱 ===
+#   Develop BY WilsonVinson      
 
 import sys
 import datetime
@@ -11,7 +10,6 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import font
 
-import pyautogui
 from PIL import Image, ImageTk
 from ttkbootstrap import Style
 import screeninfo
