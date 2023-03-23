@@ -59,7 +59,7 @@ if __name__ == '__main__':
     threading1.start()
     
     # root = tk.Tk()
-    style = Style(theme='minty')# python -m ttkbootstrap
+    style = Style(theme='darkly')# python -m ttkbootstrap
     root = style.master
     
     notebook = ttk.Notebook(root)
@@ -74,7 +74,7 @@ if __name__ == '__main__':
     root.title('MoYu ToolBox 摸鱼工具箱')
     root.iconbitmap("icon.ico")
     root.geometry("600x600")
-    root.resizable(False, False)
+    # root.resizable(False, False)
     root.configure(bg='#F0F0F0')
     root.attributes("-alpha", 0.95)
     
@@ -91,7 +91,7 @@ if __name__ == '__main__':
     icon_label.config(bg=page1['bg'])
     
     title_label = Label(page1, text='MoYu ToolBox', font=custom_font_2)
-    title_label.place(x=95, y=25)
+    title_label.place(x=95, y=200)
     title_label.config(bg=page1['bg'])
     
     monitor_var = IntVar(value=0)
