@@ -33,16 +33,22 @@ def stop_recording(recorder_obj, status_label_var, file_name_entry):
     json_driver.json_write(f'data/{file_name}.json', data)
     status_label_var.set('就绪')
 
-def start_execution(status_label_var,file_name_entry):
+def start_execution(status_label_var, file_name_entry):
     file_name = file_name_entry.get()
     if not file_name:
         file_name = 'user'
     data = json_driver.json_read(f'data/{file_name}.json')
     loop_count = loop_var.get()
     executor_obj = executor.Executor(data, loop_count)
-    threading2 = threading.Thread(target=executor_obj.run)
+    threading2 = threading.Thread(target=executor_obj.run())
     threading2.start()
     status_label_var.set('执行中')
+    try:
+        threading2.join()
+        status_label_var.set('就绪')
+    except Exception as e:
+        print(f"Error: {e}")
+        status_label_var.set('发生错误')
 
 def clear_records(recorder_obj):
     recorder_obj.events.clear()

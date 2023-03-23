@@ -52,6 +52,8 @@ class Executor:
                     key = event[2] if event[2] is not None else event[1]
                     if key == 'Key.space':
                         key = 'space'
+                    if key == "Key.backspace":
+                        key = 'backspace'
                     try:
                         delay = event[3] - self.input_events['input_event'][event_id-1][3]
                         time.sleep(max(0, delay))
