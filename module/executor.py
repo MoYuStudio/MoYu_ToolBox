@@ -47,7 +47,14 @@ class Executor:
                         time.sleep(max(0, delay))
                     except:
                         pass
-                    pyautogui.scroll(dx, dy)
+                    if dx>0 or dy>0:
+                        pyautogui.scroll(x=dx, y=dy, clicks=1)
+                        pyautogui.scroll(x=dx, y=dy, clicks=1)
+                        pyautogui.scroll(x=dx, y=dy, clicks=1)
+                    else:
+                        pyautogui.scroll(x=dx, y=dy, clicks=-1)
+                        pyautogui.scroll(x=dx, y=dy, clicks=-1)
+                        pyautogui.scroll(x=dx, y=dy, clicks=-1)
                 elif event[0] == 'keyboard_press':
                     key = event[2] if event[2] is not None else event[1]
                     if key == 'Key.space':
