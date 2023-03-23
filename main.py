@@ -85,7 +85,7 @@ if __name__ == '__main__':
     root.title('MoYu ToolBox 摸鱼工具箱')
     root.iconbitmap("icon/icon.ico")
     root.geometry("600x600")
-    # root.resizable(False, False)
+    root.resizable(False, False)
     root.configure(bg='#F0F0F0')
     root.attributes("-alpha", 0.95)
     
