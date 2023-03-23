@@ -12,7 +12,7 @@ from tkinter import font
 
 from PIL import Image, ImageTk
 from ttkbootstrap import Style
-import screeninfo
+import pyautogui
 
 import module.json_driver as json_driver
 import module.recorder as recorder
@@ -90,19 +90,10 @@ if __name__ == '__main__':
     notebook.add(page_about, text="关于")
     notebook.place(x=0, y=0)
     
-    monitors = screeninfo.get_monitors()
-    print(monitors)
+    
     
     def page_auto_group():
         global loop_var
-        
-        monitor_var = IntVar(value=0)
-        monitor_spinbox = Spinbox(page_auto, from_=0, to=len(monitors), width=1, font=custom_font_0, textvariable=monitor_var)
-        monitor_spinbox.place(x=25, y=100)
-        
-        monitorl_abel = Label(page_auto, text=('屏幕分辨率 '+str(monitors[monitor_var.get()].width)+'x'+str(monitors[monitor_var.get()].height)), font=custom_font_0)
-        monitorl_abel.place(x=65, y=100)
-        monitorl_abel.config(bg=page_auto['bg'])
         
         status_label_var = StringVar()
         status_label_var.set('就绪')

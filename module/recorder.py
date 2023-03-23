@@ -2,6 +2,7 @@
 import datetime
 
 from pynput import mouse, keyboard
+import pyautogui
 
 class Recorder:
     def __init__(self):
@@ -10,18 +11,21 @@ class Recorder:
         self.start_time = None
 
     def on_move(self, x, y):
+        x,y =pyautogui.position()
         if self.recording:
             elapsed_time = datetime.datetime.now() - self.start_time
             print(f"已记录 {elapsed_time.total_seconds()} 秒")
             self.events.append(['mouse_move', x, y, elapsed_time.total_seconds()])
 
     def on_click(self, x, y, button, pressed):
+        x,y =pyautogui.position()
         if self.recording:
             elapsed_time = datetime.datetime.now() - self.start_time
             action = 'mouse_press' if pressed else 'mouse_release'
             self.events.append(['mouse_click', x, y, str(button), action, elapsed_time.total_seconds()])
 
     def on_scroll(self, x, y, dx, dy):
+        x,y =pyautogui.position()
         if self.recording:
             elapsed_time = datetime.datetime.now() - self.start_time
             self.events.append(['mouse_scroll', x, y, dx, dy, elapsed_time.total_seconds()])
