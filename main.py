@@ -86,6 +86,10 @@ def minecraft_server_start(file_folder, server_version, max_memory, min_memory, 
         log_text.config(state="disabled")
         return
     
+def change_theme(theme):
+    global style
+    style.theme_use(theme)
+    
 def on_closing():
     global run
     root.destroy()
@@ -220,6 +224,20 @@ if __name__ == '__main__':
             log_text = Text(page_mc, width=48, height=7, state="disabled")
             log_text.place(x=25, y=350)
 
+        def page_setting_group():
+            global style
+
+            label = ttk.Label(page_setting, text="选择主题:")
+            label.place(x=25, y=25)
+
+            # 列出可供选择的主题
+            themes = ["cerulean", "cosmo", "darkly", "flatly", "journal", "litera", "lumen", "lux", "materia", "minty", "pulse", "sandstone", "simplex", "sketchy", "slate", "solar", "spacelab", "superhero", "united", "yeti"]
+            theme_var = StringVar()
+            theme_var.set(style.theme_use())
+            theme_option = ttk.OptionMenu(page_setting, theme_var, *themes, command=change_theme)
+            theme_option .place(x=125, y=25)
+                    
+
         def page_about_group():
             icon_label = tk.Label(page_about, image=tk_image)
             icon_label.place(x=250, y=100)
@@ -236,6 +254,7 @@ if __name__ == '__main__':
         page_home_group()
         page_auto_group()
         page_mc_group()
+        page_setting_group()
         page_about_group()
         
         notebook.pack(expand=True, fill="both")
