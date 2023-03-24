@@ -235,8 +235,7 @@ if __name__ == '__main__':
             theme_var = StringVar()
             theme_var.set(style.theme_use())
             theme_option = ttk.OptionMenu(page_setting, theme_var, *themes, command=change_theme)
-            theme_option .place(x=125, y=25)
-                    
+            theme_option .place(x=125, y=25) 
 
         def page_about_group():
             icon_label = tk.Label(page_about, image=tk_image)
