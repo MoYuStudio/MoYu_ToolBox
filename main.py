@@ -6,6 +6,7 @@
 import sys
 import datetime
 import threading
+import webbrowser
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
@@ -22,6 +23,10 @@ import module.executor as executor
 import module.minecraft_server as minecraft_server
 
 run = True
+
+def open_website():
+    url = "https://space.bilibili.com/103589775"
+    webbrowser.open(url)
 
 def start_recording(recorder_obj, status_label_var):
     global threading1
@@ -135,6 +140,10 @@ if __name__ == '__main__':
         notebook.add(page_about, text="关于")
         notebook.place(x=0, y=0)
         
+        def page_home_group():
+            moyu_button = Button(page_home, text='一键摸鱼',width=15, height=2, font=custom_font_2, command=open_website)
+            moyu_button.place(x=100, y=200)
+        
         def page_auto_group():
             global loop_var
             
@@ -170,7 +179,6 @@ if __name__ == '__main__':
             clear_button = Button(page_auto, text='清空记录',width=15, height=2, font=custom_font_0, command=lambda: clear_records(recorder_obj))
             clear_button.place(x=300, y=350)
 
-        
         def page_mc_group():
             global max_memory_entry, min_memory_entry, version_entry
 
@@ -224,6 +232,7 @@ if __name__ == '__main__':
             copyright_label.place(x=100, y=500)
             copyright_label.config(bg=page_about['bg'])
         
+        page_home_group()
         page_auto_group()
         page_mc_group()
         page_about_group()
