@@ -1,5 +1,8 @@
 
 import os
+import threading
+import tkinter as tk
+
 import requests
 import subprocess
 
@@ -16,7 +19,6 @@ class MinecraftServer:
 
     def install_server(self):
         
-
         if not os.path.exists(self.file_folder):
             os.makedirs(self.file_folder)
 
@@ -48,7 +50,7 @@ class MinecraftServer:
         else:
             print(f"{jar_path} 已存在，无需下载。")
 
-    def start_server(self, max_memory="4G", min_memory="2G",output_label=None):
+    def start_server(self, max_memory="4G", min_memory="2G", output_label=None):
         jar_file = os.path.join(os.getcwd()+'/'+self.file_folder, f"core.jar")
         print(jar_file)
         if not os.path.exists(jar_file):
@@ -58,11 +60,20 @@ class MinecraftServer:
         process = subprocess.Popen(start_command, cwd=self.file_folder, stdout=subprocess.PIPE)
 
         self.server_status = "运行中"
-        self.output_label = output_label
-            
-        while process.poll() is None:
-            output = process.stdout.readline().decode('utf-8')
-            if output:
-                print(output.strip())
-                if self.output_label:
-                    self.output_label.config(text=output.strip())
+        
+        # 在新线程中读取子进程输出
+        threading.Thread(target=self.read_output, args=(process.stdout, output_label)).start()
+
+    def read_output(self, stdout, output_label):
+        for line in iter(stdout.readline, b''):
+            # print(line.decode('utf-8').strip())
+            if output_label:
+                output_label.config(state="normal")
+                output_label.insert(tk.END, line.decode('utf-8'))
+                output_label.see(tk.END)
+                output_label.config(state="disabled")
+        
+if __name__ == '__main__':
+    server = MinecraftServer("minecraft/server", "1.17.1")
+    server.install_server()
+    server.start_server()
