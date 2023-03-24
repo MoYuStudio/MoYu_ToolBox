@@ -10,6 +10,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from tkinter import font
+from tkinter import messagebox
 
 from PIL import Image, ImageTk
 from ttkbootstrap import Style
@@ -18,6 +19,7 @@ import pyautogui
 import module.json_driver as json_driver
 import module.recorder as recorder
 import module.executor as executor
+import module.minecraft_server as minecraft_server
 
 run = True
 
@@ -36,7 +38,7 @@ def stop_recording(recorder_obj, status_label_var, file_name_entry):
     if not file_name:
         file_name = 'user'
     data = {'input_event': recorder_obj.events}
-    json_driver.json_write(f'data/{file_name}.json', data)
+    json_driver.json_write(f'data/json/{file_name}.json', data)
     status_label_var.set('就绪')
 
 def start_execution(status_label_var, file_name_entry):
@@ -44,7 +46,7 @@ def start_execution(status_label_var, file_name_entry):
     file_name = file_name_entry.get()
     if not file_name:
         file_name = 'user'
-    data = json_driver.json_read(f'data/{file_name}.json')
+    data = json_driver.json_read(f'data/json/{file_name}.json')
     loop_count = loop_var.get()
     executor_obj = executor.Executor(data, loop_count)
     threading2 = threading.Thread(target=executor_obj.run())
@@ -60,6 +62,17 @@ def start_execution(status_label_var, file_name_entry):
 def clear_records(recorder_obj):
     recorder_obj.events.clear()
     
+def minecraft_server_install(file_folder, server_version,status_label):
+    global server
+    status_label.config(text="服务器安装中")
+    server = minecraft_server.MinecraftServer()
+    server.install_server()
+    status_label.config(text="服务器安装成功")
+    
+def minecraft_server_start(file_folder, server_version, max_memory, min_memory,output_label):
+    server = minecraft_server.MinecraftServer(file_folder, server_version)
+    server.start_server(max_memory=max_memory, min_memory=min_memory)
+
 def on_closing():
     global run
     root.destroy()
@@ -88,19 +101,19 @@ if __name__ == '__main__':
         page_home = tk.Frame(notebook)
         page_auto = tk.Frame(notebook)
         page_mc = tk.Frame(notebook)
-        page4 = tk.Frame(notebook)
-        page5 = tk.Frame(notebook)
+        page_download = tk.Frame(notebook)
+        page_setting = tk.Frame(notebook)
         page_about = tk.Frame(notebook)
         
         custom_font_0 = font.Font(family='黑体', size=12)#, weight='bold'
         custom_font_1 = font.Font(family='黑体', size=9)
         custom_font_2 = font.Font(family='黑体', size=24)
         
-        image_file = Image.open("icon/icon_x500.png")
+        image_file = Image.open("data/icon/icon_x500.png")
         tk_image = ImageTk.PhotoImage(image_file)
         
         root.title('MoYu ToolBox 摸鱼工具箱')
-        root.iconbitmap("icon/icon.ico")
+        root.iconbitmap("data/icon/icon.ico")
         root.geometry("600x600")
         root.resizable(False, False)
         root.configure(bg='#F0F0F0')
@@ -109,8 +122,8 @@ if __name__ == '__main__':
         notebook.add(page_home, text="主页")
         notebook.add(page_auto, text="自动化")
         notebook.add(page_mc, text="MC")
-        notebook.add(page4, text="下载")
-        notebook.add(page5, text="设置")
+        notebook.add(page_download, text="下载")
+        notebook.add(page_setting, text="设置")
         notebook.add(page_about, text="关于")
         notebook.place(x=0, y=0)
         
@@ -149,6 +162,37 @@ if __name__ == '__main__':
             clear_button = Button(page_auto, text='清空记录',width=15, height=2, font=custom_font_0, command=lambda: clear_records(recorder_obj))
             clear_button.place(x=300, y=350)
 
+        
+        def page_mc_group():
+            global max_memory_entry, min_memory_entry, version_entry
+
+            version_label = Label(page_mc, text="Minecraft 服务器版本：", font=custom_font_1)
+            version_label.place(x=25, y=25)
+            version_entry = Entry(page_mc, width=20, font=custom_font_0)
+            version_entry.place(x=210, y=25)
+
+            max_memory_label = Label(page_mc, text="最大内存 (例如 4G)：", font=custom_font_1)
+            max_memory_label.place(x=25, y=50)
+            max_memory_entry = Entry(page_mc, width=20, font=custom_font_0)
+            max_memory_entry.place(x=210, y=50)
+
+            min_memory_label = Label(page_mc, text="最小内存 (例如 2G)：", font=custom_font_1)
+            min_memory_label.place(x=25, y=75)
+            min_memory_entry = Entry(page_mc, width=20, font=custom_font_0)
+            min_memory_entry.place(x=210, y=75)
+
+            status_label = Label(page_mc, text="", font=custom_font_0)
+            status_label.place(x=25, y=200)
+
+            install_button = Button(page_mc, text='安装服务器', width=15, height=2, font=custom_font_0, command=lambda: minecraft_server_install(file_folder="minecraft/server", server_version=version_entry.get(), status_label=status_label))
+            install_button.place(x=25, y=125)
+
+            start_button = Button(page_mc, text='启动服务器', width=15, height=2, font=custom_font_0, command=lambda: minecraft_server_start(file_folder="minecraft/server", server_version=version_entry.get(),max_memory=max_memory_entry.get(), min_memory=min_memory_entry.get(), output_label=status_label))
+            start_button.place(x=210, y=125)
+            
+            log_text = Text(page_mc, width=60, height=20, state="disabled")
+            log_text.place(x=25, y=250)
+
         def page_about_group():
             icon_label = tk.Label(page_about, image=tk_image)
             icon_label.place(x=250, y=100)
@@ -163,6 +207,7 @@ if __name__ == '__main__':
             copyright_label.config(bg=page_about['bg'])
         
         page_auto_group()
+        page_mc_group()
         page_about_group()
         
         notebook.pack(expand=True, fill="both")
