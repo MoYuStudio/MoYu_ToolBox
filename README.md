@@ -28,17 +28,17 @@ MoYuToolBox是一个基于Python的桌面应用程序，用于帮助用户自动
 
 以下为部分运行截图：
 
-![home](https://i.imgur.com/gx60RSX.png)
+![home](https://github.com/MoYuStudio/MoYu_ToolBox/blob/main/github/1.png)
 
-![auto](https://i.imgur.com/QUpBrFA.png)
+![auto](https://github.com/MoYuStudio/MoYu_ToolBox/blob/main/github/2.png)
 
-![mc](https://i.imgur.com/yQvT20T.png)
+![mc](https://github.com/MoYuStudio/MoYu_ToolBox/blob/main/github/3.png)
 
-![download](https://i.imgur.com/e3zJdNy.png)
+![download](https://github.com/MoYuStudio/MoYu_ToolBox/blob/main/github/4.png)
 
-![setting](https://i.imgur.com/YwT6Jfo.png)
+![setting](https://github.com/MoYuStudio/MoYu_ToolBox/blob/main/github/4.png)
 
-![about](https://i.imgur.com/LxvQ7lr.png)
+![about](https://github.com/MoYuStudio/MoYu_ToolBox/blob/main/github/5.png)
 
 ## 注意事项
 
