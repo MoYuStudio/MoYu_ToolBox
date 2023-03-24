@@ -152,11 +152,12 @@ if __name__ == '__main__':
             status_label = Label(page_auto, textvariable=status_label_var, bd=1, relief=SUNKEN, anchor=W, font=custom_font_0)
             status_label.place(x=500, y=100)
             
-            file_name_label = Label(page_auto, text='输入文件名(默认user):', font=custom_font_0)
+            file_name_label = Label(page_auto, text='输入文件名:', font=custom_font_0)
             file_name_label.place(x=25, y=150)
             file_name_label.config(bg=page_auto['bg'])
             
             file_name_entry = Entry(page_auto, width=24)
+            file_name_entry.insert(0, 'user') 
             file_name_entry.place(x=300, y=150)
 
             record_button = Button(page_auto, text='开始记录',width=15, height=2, font=custom_font_0, command=lambda: start_recording(recorder_obj, status_label_var))
