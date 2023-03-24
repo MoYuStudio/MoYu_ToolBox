@@ -3,6 +3,7 @@
 #   Develop BY WilsonVinson      
 # pyinstaller --onefile --windowed --icon=data/icon/icon.ico main.py
 
+import os
 import sys
 import datetime
 import threading
@@ -28,44 +29,7 @@ def open_website():
     url = "https://space.bilibili.com/103589775"
     webbrowser.open(url)
 
-def start_recording(recorder_obj, status_label_var):
-    global threading1
-    threading1 = threading.Thread(target=recorder_obj.run)
-    threading1.start()
-    recorder_obj.recording = True
-    recorder_obj.events.clear()
-    recorder_obj.start_time = datetime.datetime.now()
-    status_label_var.set('记录中')
 
-def stop_recording(recorder_obj, status_label_var, file_name_entry):
-    recorder_obj.recording = False
-    file_name = file_name_entry.get()
-    if not file_name:
-        file_name = 'user'
-    data = {'input_event': recorder_obj.events}
-    json_driver.json_write(f'data/json/{file_name}.json', data)
-    status_label_var.set('就绪')
-
-def start_execution(status_label_var, file_name_entry):
-    global threading2
-    file_name = file_name_entry.get()
-    if not file_name:
-        file_name = 'user'
-    data = json_driver.json_read(f'data/json/{file_name}.json')
-    loop_count = loop_var.get()
-    executor_obj = executor.Executor(data, loop_count)
-    threading2 = threading.Thread(target=executor_obj.run())
-    threading2.start()
-    status_label_var.set('执行中')
-    try:
-        threading2.join()
-        status_label_var.set('就绪')
-    except Exception as e:
-        print(f"Error: {e}")
-        status_label_var.set('发生错误')
-
-def clear_records(recorder_obj):
-    recorder_obj.events.clear()
     
 def minecraft_server_install(file_folder, server_version,server_build,status_label,):
     global server
@@ -149,40 +113,112 @@ if __name__ == '__main__':
             moyu_button.place(x=100, y=200)
         
         def page_auto_group():
-            global loop_var
             
-            status_label_var = StringVar()
-            status_label_var.set('就绪')
-            status_label = Label(page_auto, textvariable=status_label_var, bd=1, relief=SUNKEN, anchor=W, font=custom_font_0)
-            status_label.place(x=500, y=100)
+            page_auto_notebook = ttk.Notebook(page_auto)
+            page_auto_input = tk.Frame(page_auto_notebook)
+            page_auto_launch = tk.Frame(page_auto_notebook)
+            page_auto_notebook.add(page_auto_input, text="自动输入")
+            page_auto_notebook.add(page_auto_launch, text="连锁启动")
+            page_auto_notebook.place(x=0, y=5)
             
-            file_name_label = Label(page_auto, text='输入文件名:', font=custom_font_0)
-            file_name_label.place(x=25, y=150)
-            file_name_label.config(bg=page_auto['bg'])
+            def page_auto_input_group():
+                def start_recording(recorder_obj, status_label_var):
+                    global threading1
+                    threading1 = threading.Thread(target=recorder_obj.run)
+                    threading1.start()
+                    recorder_obj.recording = True
+                    recorder_obj.events.clear()
+                    recorder_obj.start_time = datetime.datetime.now()
+                    status_label_var.set('记录中')
+
+                def stop_recording(recorder_obj, status_label_var, file_name_entry):
+                    recorder_obj.recording = False
+                    file_name = file_name_entry.get()
+                    if not file_name:
+                        file_name = 'user'
+                    data = {'input_event': recorder_obj.events}
+                    json_driver.json_write(f'data/json/{file_name}.json', data)
+                    status_label_var.set('就绪')
+
+                def start_execution(status_label_var, file_name_entry):
+                    global threading2
+                    file_name = file_name_entry.get()
+                    if not file_name:
+                        file_name = 'user'
+                    data = json_driver.json_read(f'data/json/{file_name}.json')
+                    loop_count = loop_var.get()
+                    executor_obj = executor.Executor(data, loop_count)
+                    threading2 = threading.Thread(target=executor_obj.run())
+                    threading2.start()
+                    status_label_var.set('执行中')
+                    try:
+                        threading2.join()
+                        status_label_var.set('就绪')
+                    except Exception as e:
+                        print(f"Error: {e}")
+                        status_label_var.set('发生错误')
+
+                def clear_records(recorder_obj):
+                    recorder_obj.events.clear()
+                
+                global loop_var
+                status_label_var = StringVar()
+                status_label_var.set('就绪')
+                status_label = Label(page_auto_input, textvariable=status_label_var, bd=1, relief=SUNKEN, anchor=W, font=custom_font_0)
+                status_label.place(x=500, y=100)
+                
+                file_name_label = Label(page_auto_input, text='输入文件名:', font=custom_font_0)
+                file_name_label.place(x=25, y=150)
+                file_name_label.config(bg=page_auto_input['bg'])
+                
+                file_name_entry = Entry(page_auto_input, width=24)
+                file_name_entry.insert(0, 'user') 
+                file_name_entry.place(x=300, y=150)
+
+                record_button = Button(page_auto_input, text='开始记录',width=15, height=2, font=custom_font_0, command=lambda: start_recording(recorder_obj, status_label_var))
+                record_button.place(x=25, y=200)
+
+                stop_button = Button(page_auto_input, text='结束记录',width=15, height=2, font=custom_font_0, command=lambda: stop_recording(recorder_obj, status_label_var, file_name_entry))
+                stop_button.place(x=300, y=200)
+                
+                loop_label = Label(page_auto_input, text='循环次数(-1无限循环):', font=custom_font_0)
+                loop_label.place(x=25, y=290)
+                loop_label.config(bg=page_auto_input['bg'])
+
+                loop_var = IntVar(value=1)
+                loop_spinbox = Spinbox(page_auto_input, from_=-1, to=1000, width=21, font=custom_font_0, textvariable=loop_var)
+                loop_spinbox.place(x=300, y=290)
+
+                execute_button = Button(page_auto_input, text='开始执行',width=15, height=2, font=custom_font_0, command=lambda: start_execution(status_label_var,file_name_entry))
+                execute_button.place(x=25, y=350)
+
+                clear_button = Button(page_auto_input, text='清空记录',width=15, height=2, font=custom_font_0, command=lambda: clear_records(recorder_obj))
+                clear_button.place(x=300, y=350)
             
-            file_name_entry = Entry(page_auto, width=24)
-            file_name_entry.insert(0, 'user') 
-            file_name_entry.place(x=300, y=150)
-
-            record_button = Button(page_auto, text='开始记录',width=15, height=2, font=custom_font_0, command=lambda: start_recording(recorder_obj, status_label_var))
-            record_button.place(x=25, y=200)
-
-            stop_button = Button(page_auto, text='结束记录',width=15, height=2, font=custom_font_0, command=lambda: stop_recording(recorder_obj, status_label_var, file_name_entry))
-            stop_button.place(x=300, y=200)
+            def page_auto_launch_group():
+                def open_folder():
+                    folder_path = f'{os.getcwd()}/data/auto_launch'
+                    os.startfile(folder_path)
+                def open():
+                    folder_path = f'{os.getcwd()}/data/auto_launch'
+                    for file in os.listdir(folder_path):
+                        file_path = os.path.join(folder_path, file)
+                        os.startfile(file_path)
+                        
+                info_label = Label(page_auto_launch, text='把快捷方式放入文件夹在需要时一键打开', font=custom_font_0)
+                info_label.place(x=25, y=25)
+                info_label.config(bg=page_auto_input['bg'])
+                        
+                open_folder_button = Button(page_auto_launch, text='打开文件夹',width=15, height=2, font=custom_font_0, command=lambda: open_folder())
+                open_folder_button.place(x=25, y=100)
+                
+                open_button = Button(page_auto_launch, text='打开文件',width=15, height=2, font=custom_font_0, command=lambda: open())
+                open_button.place(x=25, y=200)
             
-            loop_label = Label(page_auto, text='循环次数(-1无限循环):', font=custom_font_0)
-            loop_label.place(x=25, y=290)
-            loop_label.config(bg=page_auto['bg'])
-
-            loop_var = IntVar(value=1)
-            loop_spinbox = Spinbox(page_auto, from_=-1, to=1000, width=21, font=custom_font_0, textvariable=loop_var)
-            loop_spinbox.place(x=300, y=290)
-
-            execute_button = Button(page_auto, text='开始执行',width=15, height=2, font=custom_font_0, command=lambda: start_execution(status_label_var,file_name_entry))
-            execute_button.place(x=25, y=350)
-
-            clear_button = Button(page_auto, text='清空记录',width=15, height=2, font=custom_font_0, command=lambda: clear_records(recorder_obj))
-            clear_button.place(x=300, y=350)
+            page_auto_input_group()
+            page_auto_launch_group()
+            
+            page_auto_notebook.pack(expand=True, fill="both")
 
         def page_mc_group():
             global max_memory_entry, min_memory_entry, version_entry
