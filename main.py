@@ -1,7 +1,7 @@
 
 # === MoYuToolBox 摸鱼工具箱 ===
 #   Develop BY WilsonVinson      
-# pyinstaller --onefile --windowed --icon=icon/icon.ico main.py
+# pyinstaller --onefile --windowed --icon=data/icon/icon.ico main.py
 
 import sys
 import datetime
