@@ -103,6 +103,9 @@ class App(customtkinter.CTk):
         self.notebook_color = '#1b1c22'
         self.page_home.configure(bg=self.notebook_color)
         self.page_auto.configure(bg=self.notebook_color)
+        self.page_mc.configure(bg=self.notebook_color)
+        self.page_setting.configure(bg=self.notebook_color)
+        self.page_about.configure(bg=self.notebook_color)
         
         # 绑定窗口大小变化的事件
         self.bind("<Configure>", self.on_window_resize)
@@ -127,121 +130,106 @@ class App(customtkinter.CTk):
         recorder_obj = recorder.Recorder()
         
         # create tabview
-        tabview = customtkinter.CTkTabview(self.page_auto, width=250)
+        tabview = customtkinter.CTkTabview(self.page_auto, width=350, height=350)
         tabview.place(relx=0.5, rely=0.4, anchor=tkinter.CENTER)
 
         tabview.add("自动输入")
         tabview.add("连锁启动")
         
-        # add widgets on tabs
-        self.label = customtkinter.CTkLabel(text='输入文件名:',master=tabview.tab("自动输入"))
-        self.label.place(x=0,y=0)
-        
-        # page_auto_notebook = ttk.Notebook(self.page_auto)
-        # page_auto_input = tkinter.Frame(page_auto_notebook)
-        # page_auto_launch = tkinter.Frame(page_auto_notebook)
-        # page_auto_notebook.add(page_auto_input, text="自动输入")
-        # page_auto_notebook.add(page_auto_launch, text="连锁启动")
-        # page_auto_notebook.place(x=0, y=5)
-        
-        # def page_auto_input_group():
-        #     def start_recording(recorder_obj, status_label_var):
-        #         global auto_input_thread
-        #         auto_input_thread = threading.Thread(target=recorder_obj.run)
-        #         auto_input_thread.start()
-        #         recorder_obj.recording = True
-        #         recorder_obj.events.clear()
-        #         recorder_obj.start_time = datetime.datetime.now()
-        #         status_label_var.set('记录中')
+        def page_auto_input_group():
+            def start_recording(recorder_obj, status_label_var):
+                global auto_input_thread
+                auto_input_thread = threading.Thread(target=recorder_obj.run)
+                auto_input_thread.start()
+                recorder_obj.recording = True
+                recorder_obj.events.clear()
+                recorder_obj.start_time = datetime.datetime.now()
+                status_label_var.set('记录中')
 
-        #     def stop_recording(recorder_obj, status_label_var, file_name_entry):
-        #         recorder_obj.recording = False
-        #         file_name = file_name_entry.get()
-        #         if not file_name:
-        #             file_name = 'user'
-        #         data = {'input_event': recorder_obj.events}
-        #         json_driver.json_write(f'data/json/{file_name}.json', data)
-        #         status_label_var.set('就绪')
+            def stop_recording(recorder_obj, status_label_var, file_name_entry):
+                recorder_obj.recording = False
+                file_name = file_name_entry.get()
+                if not file_name:
+                    file_name = 'user'
+                data = {'input_event': recorder_obj.events}
+                json_driver.json_write(f'data/json/{file_name}.json', data)
+                status_label_var.set('就绪')
 
-        #     def start_execution(status_label_var, file_name_entry):
-        #         global auto_input_thread
-        #         file_name = file_name_entry.get()
-        #         if not file_name:
-        #             file_name = 'user'
-        #         data = json_driver.json_read(f'data/json/{file_name}.json')
-        #         loop_count = loop_var.get()
-        #         executor_obj = executor.Executor(data, loop_count)
-        #         auto_input_thread = threading.Thread(target=executor_obj.run())
-        #         auto_input_thread.start()
-        #         status_label_var.set('执行中')
-        #         try:
-        #             auto_input_thread.join()
-        #             status_label_var.set('就绪')
-        #         except Exception as e:
-        #             print(f"Error: {e}")
-        #             status_label_var.set('发生错误')
+            def start_execution(status_label_var, file_name_entry):
+                global auto_input_thread
+                file_name = file_name_entry.get()
+                if not file_name:
+                    file_name = 'user'
+                data = json_driver.json_read(f'data/json/{file_name}.json')
+                loop_count = loop_var.get()
+                executor_obj = executor.Executor(data, loop_count)
+                auto_input_thread = threading.Thread(target=executor_obj.run())
+                auto_input_thread.start()
+                status_label_var.set('执行中')
+                try:
+                    auto_input_thread.join()
+                    status_label_var.set('就绪')
+                except Exception as e:
+                    print(f"Error: {e}")
+                    status_label_var.set('发生错误')
 
-        #     def clear_records(recorder_obj):
-        #         recorder_obj.events.clear()
+            def clear_records(recorder_obj):
+                recorder_obj.events.clear()
+
+            global loop_var
+            status_label_var = StringVar()
+            status_label_var.set('就绪')
+            status_label = customtkinter.CTkLabel(master=tabview.tab("自动输入"), textvariable=status_label_var, anchor=W, font=('Microsoft YaHei', 12))
+            status_label.place(relx=0.5, rely=0.1, anchor=tkinter.CENTER)
+
+            file_name_label = customtkinter.CTkLabel(master=tabview.tab("自动输入"), text='输入文件名:', font=('Microsoft YaHei', 12))
+            file_name_label.place(relx=0.1, rely=0.2, anchor=tkinter.W)
+            # file_name_label.config(bg=page_auto_input['bg'])
+
+            file_name_entry = customtkinter.CTkEntry(master=tabview.tab("自动输入"), width=200)
+            file_name_entry.insert(0, 'user') 
+            file_name_entry.place(relx=0.65, rely=0.2, anchor=tkinter.CENTER)
+
+            record_button = customtkinter.CTkButton(master=tabview.tab("自动输入"), text='开始记录', font=('Microsoft YaHei', 12), command=lambda: start_recording(recorder_obj, status_label_var))
+            record_button.place(relx=0.25, rely=0.4, anchor=tkinter.CENTER)
+
+            stop_button = customtkinter.CTkButton(master=tabview.tab("自动输入"), text='结束记录', font=('Microsoft YaHei', 12), command=lambda: stop_recording(recorder_obj, status_label_var, file_name_entry))
+            stop_button.place(relx=0.75, rely=0.4, anchor=tkinter.CENTER)
             
-        #     global loop_var
-        #     status_label_var = StringVar()
-        #     status_label_var.set('就绪')
-        #     status_label = Label(page_auto_input, textvariable=status_label_var, bd=1, relief=SUNKEN, anchor=W, font=('Microsoft YaHei', 12))
-        #     status_label.place(x=500, y=100)
-            
-        #     file_name_label = Label(page_auto_input, text='输入文件名:', font=('Microsoft YaHei', 12))
-        #     file_name_label.place(x=25, y=150)
-        #     file_name_label.config(bg=page_auto_input['bg'])
-            
-        #     file_name_entry = Entry(page_auto_input, width=24)
-        #     file_name_entry.insert(0, 'user') 
-        #     file_name_entry.place(x=300, y=150)
+            loop_label = customtkinter.CTkLabel(master=tabview.tab("自动输入"), text='循环次数(-1无限循环):', font=('Microsoft YaHei', 12))
+            loop_label.place(relx=0.1, rely=0.5)
 
-        #     record_button = Button(page_auto_input, text='开始记录',width=15, height=2, font=('Microsoft YaHei', 12), command=lambda: start_recording(recorder_obj, status_label_var))
-        #     record_button.place(x=25, y=200)
+            loop_var = IntVar(value=1)
+            loop_spinbox = customtkinter.CTkEntry(master=tabview.tab("自动输入"), width=150, font=('Microsoft YaHei', 12), textvariable=loop_var)
+            loop_spinbox.place(relx=0.5, rely=0.5)
 
-        #     stop_button = Button(page_auto_input, text='结束记录',width=15, height=2, font=('Microsoft YaHei', 12), command=lambda: stop_recording(recorder_obj, status_label_var, file_name_entry))
-        #     stop_button.place(x=300, y=200)
-            
-        #     loop_label = Label(page_auto_input, text='循环次数(-1无限循环):', font=('Microsoft YaHei', 12))
-        #     loop_label.place(x=25, y=290)
-        #     loop_label.config(bg=page_auto_input['bg'])
+            execute_button = customtkinter.CTkButton(master=tabview.tab("自动输入"), text='开始执行', font=('Microsoft YaHei', 12), command=lambda: start_execution(status_label_var,file_name_entry))
+            execute_button.place(relx=0.25, rely=0.7, anchor=tkinter.CENTER)
 
-        #     loop_var = IntVar(value=1)
-        #     loop_spinbox = Spinbox(page_auto_input, from_=-1, to=1000, width=21, font=('Microsoft YaHei', 12), textvariable=loop_var)
-        #     loop_spinbox.place(x=300, y=290)
-
-        #     execute_button = Button(page_auto_input, text='开始执行',width=15, height=2, font=('Microsoft YaHei', 12), command=lambda: start_execution(status_label_var,file_name_entry))
-        #     execute_button.place(x=25, y=350)
-
-        #     clear_button = Button(page_auto_input, text='清空记录',width=15, height=2, font=('Microsoft YaHei', 12), command=lambda: clear_records(recorder_obj))
-        #     clear_button.place(x=300, y=350)
+            clear_button = customtkinter.CTkButton(master=tabview.tab("自动输入"), text='清空记录', font=('Microsoft YaHei', 12), command=lambda: clear_records(recorder_obj))
+            clear_button.place(relx=0.75, rely=0.7, anchor=tkinter.CENTER)
         
-        # def page_auto_launch_group():
-        #     def open_folder():
-        #         folder_path = f'{os.getcwd()}/data/auto_launch'
-        #         os.startfile(folder_path)
-        #     def open():
-        #         folder_path = f'{os.getcwd()}/data/auto_launch'
-        #         for file in os.listdir(folder_path):
-        #             file_path = os.path.join(folder_path, file)
-        #             os.startfile(file_path)
-                    
-        #     info_label = Label(page_auto_launch, text='把快捷方式放入文件夹在需要时一键打开', font=('Microsoft YaHei', 12))
-        #     info_label.place(x=25, y=25)
-        #     info_label.config(bg=page_auto_input['bg'])
-                    
-        #     open_folder_button = Button(page_auto_launch, text='打开文件夹',width=15, height=2, font=('Microsoft YaHei', 12), command=lambda: open_folder())
-        #     open_folder_button.place(x=25, y=100)
+        def page_auto_launch_group():
+            def open_folder():
+                folder_path = f'{os.getcwd()}/data/auto_launch'
+                os.startfile(folder_path)
+            def open():
+                folder_path = f'{os.getcwd()}/data/auto_launch'
+                for file in os.listdir(folder_path):
+                    file_path = os.path.join(folder_path, file)
+                    os.startfile(file_path)
+                            
+            info_label = customtkinter.CTkLabel(master=tabview.tab("连锁启动"), text='把快捷方式放入文件夹在需要时一键打开', font=('Microsoft YaHei', 16))
+            info_label.place(relx=0.05, rely=0.1, anchor=tkinter.W)
             
-        #     open_button = Button(page_auto_launch, text='打开文件',width=15, height=2, font=('Microsoft YaHei', 12), command=lambda: open())
-        #     open_button.place(x=25, y=200)
+            open_folder_button = customtkinter.CTkButton(master=tabview.tab("连锁启动"), text='打开文件夹', font=('Microsoft YaHei', 12), command=lambda: open_folder())
+            open_folder_button.place(relx=0.05, rely=0.3)
+            
+            open_button = customtkinter.CTkButton(master=tabview.tab("连锁启动"), text='打开文件', font=('Microsoft YaHei', 12), command=lambda: open())
+            open_button.place(relx=0.55, rely=0.3)
         
-        # page_auto_input_group()
-        # page_auto_launch_group()
-        
-        # page_auto_notebook.pack(expand=True, fill="both")
+        page_auto_input_group()
+        page_auto_launch_group()
 
     def page_mc_group(self):
         def minecraft_server_install(file_folder, server_version,server_build,status_label,):
@@ -306,20 +294,17 @@ class App(customtkinter.CTk):
         pass
 
     def page_about_group(self):
+        
         image_file = Image.open("data/icon/icon_x500.png")
         tk_image = ImageTk.PhotoImage(image_file)
-        icon_label = tkinter.Label(self.page_about, image=tk_image)
-        icon_label.place(x=250, y=100)
-        icon_label.config(bg=self.page_about['bg'])
+        icon_label = customtkinter.CTkLabel(self.page_about, text='',image=tk_image)
+        icon_label.place(relx=0.45, rely=0.3)
         
-        title_label = Label(self.page_about, text='MoYu ToolBox', font=('Microsoft YaHei', 12))
-        title_label.place(x=150, y=250)
-        title_label.config(bg=self.page_about['bg'])
+        title_label = customtkinter.CTkLabel(self.page_about, text='MoYu ToolBox', font=('Microsoft YaHei', 32))
+        title_label.place(relx=0.22, rely=0.5)
         
-        copyright_label = Label(self.page_about, text='Powered BY ChatGPT   Developed BY WilsonVinson', font=('Microsoft YaHei', 12))
-        copyright_label.place(x=100, y=500)
-        copyright_label.config(bg=self.page_about['bg'])
-    
+        copyright_label = customtkinter.CTkLabel(self.page_about, text='Powered BY ChatGPT   Developed BY WilsonVinson', font=('Microsoft YaHei', 10))
+        copyright_label.place(relx=0.2, rely=0.6)
     
 if __name__ == "__main__":
     app = App()
