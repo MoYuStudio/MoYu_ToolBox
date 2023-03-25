@@ -9,7 +9,7 @@ import time
 import datetime
 import threading
 import webbrowser
-import tkinter as tk
+import tkinter
 from tkinter import *
 from tkinter import ttk
 from tkinter import font
@@ -17,6 +17,7 @@ from tkinter import messagebox
 
 from PIL import Image, ImageTk
 from ttkbootstrap import Style
+import customtkinter
 import pyautogui
 import pystray
 
@@ -28,19 +29,23 @@ import module.minecraft_server as minecraft_server
 def main_thread():
     global root
     recorder_obj = recorder.Recorder()
-        
+    
+    customtkinter.set_appearance_mode('dark')  # Modes: system (default), light, dark
+    customtkinter.set_default_color_theme('blue')  # Themes: blue (default), dark-blue, green
+
+    root = customtkinter.CTk()
     # root = tk.Tk()
-    style = Style(theme='darkly')# python -m ttkbootstrap
-    root = style.master
+    # style = Style(theme='darkly')# python -m ttkbootstrap
+    # root = style.master
     
     notebook = ttk.Notebook(root)
     
-    page_home = tk.Frame(notebook)
-    page_auto = tk.Frame(notebook)
-    page_mc = tk.Frame(notebook)
-    page_download = tk.Frame(notebook)
-    page_setting = tk.Frame(notebook)
-    page_about = tk.Frame(notebook)
+    page_home = tkinter.Frame(notebook)
+    page_auto = tkinter.Frame(notebook)
+    page_mc = tkinter.Frame(notebook)
+    page_download = tkinter.Frame(notebook)
+    page_setting = tkinter.Frame(notebook)
+    page_about = tkinter.Frame(notebook)
     
     custom_font_0 = font.Font(family='黑体', size=12)#, weight='bold'
     custom_font_1 = font.Font(family='黑体', size=9)
@@ -53,8 +58,8 @@ def main_thread():
     root.iconbitmap("data/icon/icon.ico")
     root.geometry("600x600")
     root.resizable(False, False)
-    root.configure(bg='#F0F0F0')
-    root.attributes("-alpha", 0.95)
+    root.configure(bg='#ECECEC')
+    # root.attributes("-alpha", 0.95)
     
     notebook.add(page_home, text="主页")
     notebook.add(page_auto, text="自动化")
@@ -69,14 +74,14 @@ def main_thread():
             url = "https://space.bilibili.com/103589775"
             webbrowser.open(url)
         
-        moyu_button = Button(page_home, text='一键摸鱼',width=15, height=2, font=custom_font_2, command=open_website)
-        moyu_button.place(x=100, y=200)
+        moyu_button = customtkinter.CTkButton(page_home, text='一键摸鱼',font=('Microsoft YaHei', 32), command=open_website)
+        moyu_button.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
     
     def page_auto_group():
         
         page_auto_notebook = ttk.Notebook(page_auto)
-        page_auto_input = tk.Frame(page_auto_notebook)
-        page_auto_launch = tk.Frame(page_auto_notebook)
+        page_auto_input = tkinter.Frame(page_auto_notebook)
+        page_auto_launch = tkinter.Frame(page_auto_notebook)
         page_auto_notebook.add(page_auto_input, text="自动输入")
         page_auto_notebook.add(page_auto_launch, text="连锁启动")
         page_auto_notebook.place(x=0, y=5)
@@ -240,21 +245,22 @@ def main_thread():
         log_text.place(x=25, y=350)
 
     def page_setting_group():
-        def change_theme(theme):
-            style.theme_use(theme)
+        pass
+        # def change_theme(theme):
+        #     style.theme_use(theme)
 
-        label = ttk.Label(page_setting, text="选择主题:")
-        label.place(x=25, y=25)
+        # label = ttk.Label(page_setting, text="选择主题:")
+        # label.place(x=25, y=25)
 
-        # 列出可供选择的主题
-        themes = ["cerulean", "cosmo", "darkly", "flatly", "journal", "litera", "lumen", "lux", "materia", "minty", "pulse", "sandstone", "simplex", "sketchy", "slate", "solar", "spacelab", "superhero", "united", "yeti"]
-        theme_var = StringVar()
-        theme_var.set(style.theme_use())
-        theme_option = ttk.OptionMenu(page_setting, theme_var, *themes, command=change_theme)
-        theme_option .place(x=125, y=25) 
+        # # 列出可供选择的主题
+        # themes = ["cerulean", "cosmo", "darkly", "flatly", "journal", "litera", "lumen", "lux", "materia", "minty", "pulse", "sandstone", "simplex", "sketchy", "slate", "solar", "spacelab", "superhero", "united", "yeti"]
+        # theme_var = StringVar()
+        # theme_var.set(style.theme_use())
+        # theme_option = ttk.OptionMenu(page_setting, theme_var, *themes, command=change_theme)
+        # theme_option .place(x=125, y=25) 
 
     def page_about_group():
-        icon_label = tk.Label(page_about, image=tk_image)
+        icon_label = tkinter.Label(page_about, image=tk_image)
         icon_label.place(x=250, y=100)
         icon_label.config(bg=page_about['bg'])
         
