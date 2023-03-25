@@ -232,17 +232,17 @@ class App(customtkinter.CTk):
         page_auto_launch_group()
 
     def page_mc_group(self):
-        def minecraft_server_install(file_folder, server_version,server_build,status_label,):
+        def minecraft_server_install(file_folder, server_version, server_build, status_label):
             global server
             status_label.config(text="服务器安装中")
-            server = minecraft_server.MinecraftServer(server_version=server_version,server_build=server_build)
+            server = minecraft_server.MinecraftServer(server_version=server_version, server_build=server_build)
             server.install_server()
             status_label.config(text="服务器安装成功")
-            
+
         def minecraft_server_start(file_folder, server_version, max_memory, min_memory, log_text, output_label=None):
             global server
             server = minecraft_server.MinecraftServer(file_folder=file_folder, server_version=server_version)
-                
+
             server.start_server(max_memory=max_memory, min_memory=min_memory, output_label=log_text)
 
             if server.server_status == "未安装":
@@ -250,45 +250,44 @@ class App(customtkinter.CTk):
                 log_text.insert(END, "服务器未安装，请先安装服务器\n")
                 log_text.config(state="disabled")
                 return
-        
+            
         global max_memory_entry, min_memory_entry, version_entry
 
-        version_label = Label(self.page_mc, text="服务器版本(留空自动最新)：", font=('Microsoft YaHei', 12))
-        version_label.place(x=25, y=25)
-        version_entry = Entry(self.page_mc, width=20, font=('Microsoft YaHei', 12))
+        version_label = customtkinter.CTkLabel(self.page_mc, text="服务器版本(留空自动最新)：", font=('Microsoft YaHei', 12))
+        version_label.place(relx=0.1, rely=0.05)
+        version_entry = customtkinter.CTkEntry(self.page_mc, width=150, font=('Microsoft YaHei', 12))
         version_entry.insert(0, '') 
-        version_entry.place(x=280, y=25)
+        version_entry.place(relx=0.5, rely=0.05)
         
-        build_label = Label(self.page_mc, text="版本构建(留空自动最新)：", font=('Microsoft YaHei', 12))
-        build_label.place(x=25, y=75)
-        build_entry = Entry(self.page_mc, width=20, font=('Microsoft YaHei', 12))
+        build_label = customtkinter.CTkLabel(self.page_mc, text="版本构建(留空自动最新)：", font=('Microsoft YaHei', 12))
+        build_label.place(relx=0.1, rely=0.15)
+        build_entry = customtkinter.CTkEntry(self.page_mc, width=150, font=('Microsoft YaHei', 12))
         build_entry.insert(0, '') 
-        build_entry.place(x=280, y=75)
+        build_entry.place(relx=0.5, rely=0.15)
 
-        max_memory_label = Label(self.page_mc, text="最大内存：", font=('Microsoft YaHei', 12))
-        max_memory_label.place(x=25, y=150)
-        max_memory_entry = Entry(self.page_mc, width=20, font=('Microsoft YaHei', 12))
+        max_memory_label = customtkinter.CTkLabel(self.page_mc, text="最大内存：", font=('Microsoft YaHei', 12))
+        max_memory_label.place(relx=0.1, rely=0.25)
+        max_memory_entry = customtkinter.CTkEntry(self.page_mc, width=200, font=('Microsoft YaHei', 12))
         max_memory_entry.insert(0, '4G') 
-        max_memory_entry.place(x=150, y=150)
+        max_memory_entry.place(relx=0.3, rely=0.25)
 
-        min_memory_label = Label(self.page_mc, text="最小内存：", font=('Microsoft YaHei', 12))
-        min_memory_label.place(x=25, y=200)
-        min_memory_entry = Entry(self.page_mc, width=20, font=('Microsoft YaHei', 12))
+        min_memory_label = customtkinter.CTkLabel(self.page_mc, text="最小内存：", font=('Microsoft YaHei', 12))
+        min_memory_label.place(relx=0.1, rely=0.35)
+        min_memory_entry = customtkinter.CTkEntry(self.page_mc, width=200, font=('Microsoft YaHei', 12))
         min_memory_entry.insert(0, '2G') 
-        min_memory_entry.place(x=150, y=200)
+        min_memory_entry.place(relx=0.3, rely=0.35)
 
-        status_label = Label(self.page_mc, text="", font=('Microsoft YaHei', 12))
-        status_label.place(x=25, y=250)
+        status_label = customtkinter.CTkLabel(self.page_mc, text="", font=('Microsoft YaHei', 12))
+        status_label.place(relx=0.1, rely=0.45)
 
-        install_button = Button(self.page_mc, text='安装服务器', width=15, height=2, font=('Microsoft YaHei', 12), command=lambda: minecraft_server_install(file_folder="minecraft/server", server_version=version_entry.get(),server_build=build_entry.get(), status_label=status_label))
-        install_button.place(x=25, y=250)
+        install_button = customtkinter.CTkButton(self.page_mc, text='安装服务器', font=('Microsoft YaHei', 12), command=lambda: minecraft_server_install(file_folder="minecraft/server", server_version=version_entry.get(), server_build=build_entry.get(), status_label=status_label))
+        install_button.place(relx=0.1, rely=0.55)
 
-        start_button = Button(self.page_mc, text='启动服务器', width=15, height=2, font=('Microsoft YaHei', 12), command=lambda: minecraft_server_start(file_folder="minecraft/server", server_version=version_entry.get(),max_memory=max_memory_entry.get(), min_memory=min_memory_entry.get(), log_text=log_text, ))
+        start_button = customtkinter.CTkButton(self.page_mc, text='启动服务器', font=('Microsoft YaHei', 12), command=lambda: minecraft_server_start(file_folder="minecraft/server", server_version=version_entry.get(), max_memory=max_memory_entry.get(), min_memory=min_memory_entry.get(), log_text=log_text, ))
+        start_button.place(relx=0.55, rely=0.55)
 
-        start_button.place(x=250, y=250)
-        
         log_text = Text(self.page_mc, width=48, height=7, state="disabled")
-        log_text.place(x=25, y=350)
+        log_text.place(relx=0.1, rely=0.65)
 
     def page_setting_group(self):
         pass
