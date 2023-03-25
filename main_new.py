@@ -234,10 +234,10 @@ class App(customtkinter.CTk):
     def page_mc_group(self):
         def minecraft_server_install(file_folder, server_version, server_build, status_label):
             global server
-            status_label.config(text="服务器安装中")
+            status_label.configure(text="服务器安装中")
             server = minecraft_server.MinecraftServer(server_version=server_version, server_build=server_build)
             server.install_server()
-            status_label.config(text="服务器安装成功")
+            status_label.configure(text="服务器安装成功")
 
         def minecraft_server_start(file_folder, server_version, max_memory, min_memory, log_text, output_label=None):
             global server
