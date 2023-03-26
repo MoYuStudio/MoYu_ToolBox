@@ -298,15 +298,21 @@ class App(customtkinter.CTk):
         log_text.place(relx=0.1, rely=0.65)
 
     def page_bilibili_group(self):
-        roomid = 7193936
-        bilibili_danmu = bilibili_live.BilibiliLive(roomid)
-
+        
         def bilibili_thread_start():
+            global bilibili_danmu
+            bilibili_danmu = bilibili_live.BilibiliLive(roomid=roomid_entry.get())
             bilibili_thread = threading.Thread(target=bilibili_danmu.run, daemon=True)
             bilibili_thread.start()
 
         def bilibili_thread_stop():
             bilibili_danmu.stop_thread = True
+            
+        roomid_label = customtkinter.CTkLabel(self.page_bilibili, text="房间号：", font=('Microsoft YaHei', 12))
+        roomid_label.place(relx=0.1, rely=0.05)
+        roomid_entry = customtkinter.CTkEntry(self.page_bilibili, width=150, font=('Microsoft YaHei', 12))
+        roomid_entry.insert(0, '7193936') 
+        roomid_entry.place(relx=0.5, rely=0.05)
 
         open_button = customtkinter.CTkButton(self.page_bilibili, text='开启', font=('Microsoft YaHei', 12), command=lambda: bilibili_thread_start())
         open_button.place(relx=0.1, rely=0.55)
