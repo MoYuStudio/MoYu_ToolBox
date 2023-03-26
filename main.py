@@ -2,6 +2,7 @@
 # === MoYuToolBox 摸鱼工具箱 ===
 #   Develop BY WilsonVinson      
 # pyinstaller --onefile --windowed --icon=data/icon/icon.ico main.py
+# pyinstaller --noconfirm --onedir --windowed --icon=data/icon/icon.ico --add-data "C:\Users\WilsonVinson\AppData\Local\Programs\Python\Python311\Lib\site-packages/customtkinter;customtkinter/"  "main.py"
 # https://www.lfd.uci.edu/~gohlke/pythonlibs
 
 import os
