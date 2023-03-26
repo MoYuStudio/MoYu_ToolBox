@@ -34,9 +34,8 @@ class BilibiliLive:
         if len(initial_danmu) > 0:
             self.danmuhistory += initial_danmu
             self.last_timestamp = self.danmuhistory[-1]['timeline']
-            self.show(self.danmuhistory)
 
-        while not self.stop_thread:  # 检查 stop_thread 的值
+        while not self.stop_thread:
             os.system("cls")
             danmu_new = self.fetch_danmu()
 
