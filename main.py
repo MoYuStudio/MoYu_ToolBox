@@ -2,6 +2,7 @@
 # === MoYuToolBox 摸鱼工具箱 ===
 #   Develop BY WilsonVinson      
 # pyinstaller --onefile --windowed --icon=data/icon/icon.ico main.py
+# https://www.lfd.uci.edu/~gohlke/pythonlibs
 
 import os
 import sys
@@ -16,75 +17,132 @@ from tkinter import font
 from tkinter import messagebox
 
 from PIL import Image, ImageTk
-from ttkbootstrap import Style
 import customtkinter
 import pyautogui
 import pystray
 
 import module.json_driver as json_driver
-import module.recorder as recorder
-import module.executor as executor
+import module.autoinput_recorder as autoinput_recorder
+import module.autoinput_executor as autoinput_executor
 import module.minecraft_server as minecraft_server
-    
-def main_thread():
-    global root
-    recorder_obj = recorder.Recorder()
-    
-    customtkinter.set_appearance_mode('dark')  # Modes: system (default), light, dark
-    customtkinter.set_default_color_theme('blue')  # Themes: blue (default), dark-blue, green
+import module.bilibili_live as bilibili_live
 
-    root = customtkinter.CTk()
-    # root = tk.Tk()
-    # style = Style(theme='darkly')# python -m ttkbootstrap
-    # root = style.master
-    
-    notebook = ttk.Notebook(root)
-    
-    page_home = tkinter.Frame(notebook)
-    page_auto = tkinter.Frame(notebook)
-    page_mc = tkinter.Frame(notebook)
-    page_download = tkinter.Frame(notebook)
-    page_setting = tkinter.Frame(notebook)
-    page_about = tkinter.Frame(notebook)
-    
-    custom_font_0 = font.Font(family='黑体', size=12)#, weight='bold'
-    custom_font_1 = font.Font(family='黑体', size=9)
-    custom_font_2 = font.Font(family='黑体', size=24)
-    
-    image_file = Image.open("data/icon/icon_x500.png")
-    tk_image = ImageTk.PhotoImage(image_file)
-    
-    root.title('MoYu ToolBox 摸鱼工具箱')
-    root.iconbitmap("data/icon/icon.ico")
-    root.geometry("600x600")
-    root.resizable(False, False)
-    root.configure(bg='#ECECEC')
-    # root.attributes("-alpha", 0.95)
-    
-    notebook.add(page_home, text="主页")
-    notebook.add(page_auto, text="自动化")
-    notebook.add(page_mc, text="MC")
-    notebook.add(page_download, text="下载")
-    notebook.add(page_setting, text="设置")
-    notebook.add(page_about, text="关于")
-    notebook.place(x=0, y=0)
-    
-    def page_home_group():
+customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
+customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
+
+class App(customtkinter.CTk):
+    def __init__(self):
+        super().__init__()
+        
+        # 设置样式
+        style = ttk.Style()
+        style.configure("TNotebook", borderwidth=0, padding=0)
+
+        # configure window
+        self.title("MoYu ToolBox 摸鱼工具箱")
+        self.iconbitmap("data/icon/icon.ico")
+        self.geometry(f"{600}x{400}")
+
+        # 配置网格布局 (4x4)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure((2, 3), weight=0)
+        self.grid_rowconfigure((0, 1, 2), weight=1)
+
+        # 创建带有小部件的侧边栏框架
+        self.sidebar_frame = customtkinter.CTkFrame(self, width=100, corner_radius=0)
+        self.sidebar_frame.grid(row=0, column=0, rowspan=9, sticky="nsew")
+        self.sidebar_frame.grid_rowconfigure(9, weight=1)
+        self.sidebar_frame.lift()
+        
+        # 添加小部件到侧边栏框架
+        self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="MoYu ToolBox", font=customtkinter.CTkFont('Microsoft YaHei', size=24, weight="bold"))
+        self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+
+        self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="主页", font=customtkinter.CTkFont('Microsoft YaHei', size=16, weight="bold"), command=lambda: self.notebook.select(self.page_home))
+        self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
+        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, text="自动化", font=customtkinter.CTkFont('Microsoft YaHei', size=16, weight="bold"), command=lambda: self.notebook.select(self.page_auto))
+        self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
+        self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, text="MC", font=customtkinter.CTkFont('Microsoft YaHei', size=16, weight="bold"), command=lambda: self.notebook.select(self.page_mc))
+        self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
+        self.sidebar_button_4 = customtkinter.CTkButton(self.sidebar_frame, text="小破站", font=customtkinter.CTkFont('Microsoft YaHei', size=16, weight="bold"), command=lambda: self.notebook.select(self.page_bilibili))
+        self.sidebar_button_4.grid(row=4, column=0, padx=20, pady=10)
+        self.sidebar_button_5 = customtkinter.CTkButton(self.sidebar_frame, text="设置", font=customtkinter.CTkFont('Microsoft YaHei', size=16, weight="bold"), command=lambda: self.notebook.select(self.page_setting))
+        self.sidebar_button_5.grid(row=5, column=0, padx=20, pady=10)
+        self.sidebar_button_6 = customtkinter.CTkButton(self.sidebar_frame, text="关于", font=customtkinter.CTkFont('Microsoft YaHei', size=16, weight="bold"), command=lambda: self.notebook.select(self.page_about))
+        self.sidebar_button_6.grid(row=6, column=0, padx=20, pady=10)
+        
+        # # 创建页面
+        # self.notebook = ttk.Notebook(self, style="HiddenTab")
+        # self.notebook.grid(row=0, column=1, rowspan=9, columnspan=3, sticky="nsew")
+        
+        # 创建 Notebook
+        self.notebook = ttk.Notebook(self)
+        self.notebook_style = ttk.Style()
+        self.notebook_style.configure("TNotebook", background="transparent")
+        self.notebook.lower()
+                
+        self.page_home = tkinter.Frame(self.notebook, highlightthickness=0)
+        self.page_auto = tkinter.Frame(self.notebook, highlightthickness=0)
+        self.page_mc = tkinter.Frame(self.notebook, highlightthickness=0)
+        self.page_bilibili = tkinter.Frame(self.notebook, highlightthickness=0)
+        self.page_download = tkinter.Frame(self.notebook, highlightthickness=0)
+        self.page_setting = tkinter.Frame(self.notebook, highlightthickness=0)
+        self.page_about = tkinter.Frame(self.notebook, highlightthickness=0)
+        
+        self.notebook.add(self.page_home, text="主页")
+        self.notebook.add(self.page_auto, text="自动化")
+        self.notebook.add(self.page_mc, text="MC")
+        self.notebook.add(self.page_bilibili, text="小破站")
+        self.notebook.add(self.page_download, text="下载")
+        self.notebook.add(self.page_setting, text="设置")
+        self.notebook.add(self.page_about, text="关于")
+        self.notebook.select(self.page_home)
+
+        self.notebook.place(x=325, y=-32)
+        
+        self.page_home_group()
+        self.page_auto_group()
+        self.page_mc_group()
+        self.page_bilibili_group()
+        self.page_setting_group()
+        self.page_about_group()
+        
+        self.notebook_color = '#1b1c22'
+        self.page_home.configure(bg=self.notebook_color)
+        self.page_auto.configure(bg=self.notebook_color)
+        self.page_mc.configure(bg=self.notebook_color)
+        self.page_bilibili.configure(bg=self.notebook_color)
+        self.page_setting.configure(bg=self.notebook_color)
+        self.page_about.configure(bg=self.notebook_color)
+        
+        # 绑定窗口大小变化的事件
+        self.bind("<Configure>", self.on_window_resize)
+
+    def on_window_resize(self, event):
+        # 计算Notebook的新大小
+        self.window_width = int(self.winfo_width())
+        self.window_height = int(self.winfo_height())
+        # 设置Notebook的新大小
+        self.notebook.config(width=self.window_width-325, height=self.window_height+32)
+
+    def page_home_group(self):
         def open_website():
             url = "https://space.bilibili.com/103589775"
             webbrowser.open(url)
-        
-        moyu_button = customtkinter.CTkButton(page_home, text='一键摸鱼',font=('Microsoft YaHei', 32), command=open_website)
-        moyu_button.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
+            
+        moyu_button = customtkinter.CTkButton(self.page_home, text='一键摸鱼',font=('Microsoft YaHei', 32), command=open_website)
+        moyu_button.place(relx=0.5, rely=0.4, anchor=tkinter.CENTER)
     
-    def page_auto_group():
+    def page_auto_group(self):
         
-        page_auto_notebook = ttk.Notebook(page_auto)
-        page_auto_input = tkinter.Frame(page_auto_notebook)
-        page_auto_launch = tkinter.Frame(page_auto_notebook)
-        page_auto_notebook.add(page_auto_input, text="自动输入")
-        page_auto_notebook.add(page_auto_launch, text="连锁启动")
-        page_auto_notebook.place(x=0, y=5)
+        recorder_obj = autoinput_recorder.Recorder()
+        
+        # create tabview
+        tabview = customtkinter.CTkTabview(self.page_auto, width=350, height=350)
+        tabview.place(relx=0.5, rely=0.4, anchor=tkinter.CENTER)
+
+        tabview.add("自动输入")
+        tabview.add("链式启动")
         
         def page_auto_input_group():
             def start_recording(recorder_obj, status_label_var):
@@ -112,7 +170,7 @@ def main_thread():
                     file_name = 'user'
                 data = json_driver.json_read(f'data/json/{file_name}.json')
                 loop_count = loop_var.get()
-                executor_obj = executor.Executor(data, loop_count)
+                executor_obj = autoinput_executor.Executor(data, loop_count)
                 auto_input_thread = threading.Thread(target=executor_obj.run())
                 auto_input_thread.start()
                 status_label_var.set('执行中')
@@ -125,40 +183,39 @@ def main_thread():
 
             def clear_records(recorder_obj):
                 recorder_obj.events.clear()
-            
+
             global loop_var
             status_label_var = StringVar()
             status_label_var.set('就绪')
-            status_label = Label(page_auto_input, textvariable=status_label_var, bd=1, relief=SUNKEN, anchor=W, font=custom_font_0)
-            status_label.place(x=500, y=100)
-            
-            file_name_label = Label(page_auto_input, text='输入文件名:', font=custom_font_0)
-            file_name_label.place(x=25, y=150)
-            file_name_label.config(bg=page_auto_input['bg'])
-            
-            file_name_entry = Entry(page_auto_input, width=24)
+            status_label = customtkinter.CTkLabel(master=tabview.tab("自动输入"), textvariable=status_label_var, anchor=W, font=('Microsoft YaHei', 12))
+            status_label.place(relx=0.5, rely=0.1, anchor=tkinter.CENTER)
+
+            file_name_label = customtkinter.CTkLabel(master=tabview.tab("自动输入"), text='输入文件名:', font=('Microsoft YaHei', 12))
+            file_name_label.place(relx=0.1, rely=0.2, anchor=tkinter.W)
+            # file_name_label.config(bg=page_auto_input['bg'])
+
+            file_name_entry = customtkinter.CTkEntry(master=tabview.tab("自动输入"), width=200)
             file_name_entry.insert(0, 'user') 
-            file_name_entry.place(x=300, y=150)
+            file_name_entry.place(relx=0.65, rely=0.2, anchor=tkinter.CENTER)
 
-            record_button = Button(page_auto_input, text='开始记录',width=15, height=2, font=custom_font_0, command=lambda: start_recording(recorder_obj, status_label_var))
-            record_button.place(x=25, y=200)
+            record_button = customtkinter.CTkButton(master=tabview.tab("自动输入"), text='开始记录', font=('Microsoft YaHei', 12), command=lambda: start_recording(recorder_obj, status_label_var))
+            record_button.place(relx=0.25, rely=0.4, anchor=tkinter.CENTER)
 
-            stop_button = Button(page_auto_input, text='结束记录',width=15, height=2, font=custom_font_0, command=lambda: stop_recording(recorder_obj, status_label_var, file_name_entry))
-            stop_button.place(x=300, y=200)
+            stop_button = customtkinter.CTkButton(master=tabview.tab("自动输入"), text='结束记录', font=('Microsoft YaHei', 12), command=lambda: stop_recording(recorder_obj, status_label_var, file_name_entry))
+            stop_button.place(relx=0.75, rely=0.4, anchor=tkinter.CENTER)
             
-            loop_label = Label(page_auto_input, text='循环次数(-1无限循环):', font=custom_font_0)
-            loop_label.place(x=25, y=290)
-            loop_label.config(bg=page_auto_input['bg'])
+            loop_label = customtkinter.CTkLabel(master=tabview.tab("自动输入"), text='循环次数(-1无限循环):', font=('Microsoft YaHei', 12))
+            loop_label.place(relx=0.1, rely=0.5)
 
             loop_var = IntVar(value=1)
-            loop_spinbox = Spinbox(page_auto_input, from_=-1, to=1000, width=21, font=custom_font_0, textvariable=loop_var)
-            loop_spinbox.place(x=300, y=290)
+            loop_spinbox = customtkinter.CTkEntry(master=tabview.tab("自动输入"), width=150, font=('Microsoft YaHei', 12), textvariable=loop_var)
+            loop_spinbox.place(relx=0.5, rely=0.5)
 
-            execute_button = Button(page_auto_input, text='开始执行',width=15, height=2, font=custom_font_0, command=lambda: start_execution(status_label_var,file_name_entry))
-            execute_button.place(x=25, y=350)
+            execute_button = customtkinter.CTkButton(master=tabview.tab("自动输入"), text='开始执行', font=('Microsoft YaHei', 12), command=lambda: start_execution(status_label_var,file_name_entry))
+            execute_button.place(relx=0.25, rely=0.7, anchor=tkinter.CENTER)
 
-            clear_button = Button(page_auto_input, text='清空记录',width=15, height=2, font=custom_font_0, command=lambda: clear_records(recorder_obj))
-            clear_button.place(x=300, y=350)
+            clear_button = customtkinter.CTkButton(master=tabview.tab("自动输入"), text='清空记录', font=('Microsoft YaHei', 12), command=lambda: clear_records(recorder_obj))
+            clear_button.place(relx=0.75, rely=0.7, anchor=tkinter.CENTER)
         
         def page_auto_launch_group():
             def open_folder():
@@ -169,34 +226,31 @@ def main_thread():
                 for file in os.listdir(folder_path):
                     file_path = os.path.join(folder_path, file)
                     os.startfile(file_path)
-                    
-            info_label = Label(page_auto_launch, text='把快捷方式放入文件夹在需要时一键打开', font=custom_font_0)
-            info_label.place(x=25, y=25)
-            info_label.config(bg=page_auto_input['bg'])
-                    
-            open_folder_button = Button(page_auto_launch, text='打开文件夹',width=15, height=2, font=custom_font_0, command=lambda: open_folder())
-            open_folder_button.place(x=25, y=100)
+                            
+            info_label = customtkinter.CTkLabel(master=tabview.tab("链式启动"), text='把快捷方式放入文件夹在需要时一键打开', font=('Microsoft YaHei', 16))
+            info_label.place(relx=0.05, rely=0.1, anchor=tkinter.W)
             
-            open_button = Button(page_auto_launch, text='打开文件',width=15, height=2, font=custom_font_0, command=lambda: open())
-            open_button.place(x=25, y=200)
+            open_folder_button = customtkinter.CTkButton(master=tabview.tab("链式启动"), text='打开文件夹', font=('Microsoft YaHei', 12), command=lambda: open_folder())
+            open_folder_button.place(relx=0.05, rely=0.3)
+            
+            open_button = customtkinter.CTkButton(master=tabview.tab("链式启动"), text='打开文件', font=('Microsoft YaHei', 12), command=lambda: open())
+            open_button.place(relx=0.55, rely=0.3)
         
         page_auto_input_group()
         page_auto_launch_group()
-        
-        page_auto_notebook.pack(expand=True, fill="both")
 
-    def page_mc_group():
-        def minecraft_server_install(file_folder, server_version,server_build,status_label,):
+    def page_mc_group(self):
+        def minecraft_server_install(file_folder, server_version, server_build, status_label):
             global server
-            status_label.config(text="服务器安装中")
-            server = minecraft_server.MinecraftServer(server_version=server_version,server_build=server_build)
+            status_label.configure(text="服务器安装中")
+            server = minecraft_server.MinecraftServer(server_version=server_version, server_build=server_build)
             server.install_server()
-            status_label.config(text="服务器安装成功")
-            
+            status_label.configure(text="服务器安装成功")
+
         def minecraft_server_start(file_folder, server_version, max_memory, min_memory, log_text, output_label=None):
             global server
             server = minecraft_server.MinecraftServer(file_folder=file_folder, server_version=server_version)
-                
+
             server.start_server(max_memory=max_memory, min_memory=min_memory, output_label=log_text)
 
             if server.server_status == "未安装":
@@ -204,95 +258,78 @@ def main_thread():
                 log_text.insert(END, "服务器未安装，请先安装服务器\n")
                 log_text.config(state="disabled")
                 return
-        
+            
         global max_memory_entry, min_memory_entry, version_entry
 
-        version_label = Label(page_mc, text="服务器版本(留空自动最新)：", font=custom_font_1)
-        version_label.place(x=25, y=25)
-        version_entry = Entry(page_mc, width=20, font=custom_font_0)
+        version_label = customtkinter.CTkLabel(self.page_mc, text="服务器版本(留空自动最新)：", font=('Microsoft YaHei', 12))
+        version_label.place(relx=0.1, rely=0.05)
+        version_entry = customtkinter.CTkEntry(self.page_mc, width=150, font=('Microsoft YaHei', 12))
         version_entry.insert(0, '') 
-        version_entry.place(x=280, y=25)
+        version_entry.place(relx=0.5, rely=0.05)
         
-        build_label = Label(page_mc, text="版本构建(留空自动最新)：", font=custom_font_1)
-        build_label.place(x=25, y=75)
-        build_entry = Entry(page_mc, width=20, font=custom_font_0)
+        build_label = customtkinter.CTkLabel(self.page_mc, text="版本构建(留空自动最新)：", font=('Microsoft YaHei', 12))
+        build_label.place(relx=0.1, rely=0.15)
+        build_entry = customtkinter.CTkEntry(self.page_mc, width=150, font=('Microsoft YaHei', 12))
         build_entry.insert(0, '') 
-        build_entry.place(x=280, y=75)
+        build_entry.place(relx=0.5, rely=0.15)
 
-        max_memory_label = Label(page_mc, text="最大内存：", font=custom_font_1)
-        max_memory_label.place(x=25, y=150)
-        max_memory_entry = Entry(page_mc, width=20, font=custom_font_0)
+        max_memory_label = customtkinter.CTkLabel(self.page_mc, text="最大内存：", font=('Microsoft YaHei', 12))
+        max_memory_label.place(relx=0.1, rely=0.25)
+        max_memory_entry = customtkinter.CTkEntry(self.page_mc, width=200, font=('Microsoft YaHei', 12))
         max_memory_entry.insert(0, '4G') 
-        max_memory_entry.place(x=150, y=150)
+        max_memory_entry.place(relx=0.3, rely=0.25)
 
-        min_memory_label = Label(page_mc, text="最小内存：", font=custom_font_1)
-        min_memory_label.place(x=25, y=200)
-        min_memory_entry = Entry(page_mc, width=20, font=custom_font_0)
+        min_memory_label = customtkinter.CTkLabel(self.page_mc, text="最小内存：", font=('Microsoft YaHei', 12))
+        min_memory_label.place(relx=0.1, rely=0.35)
+        min_memory_entry = customtkinter.CTkEntry(self.page_mc, width=200, font=('Microsoft YaHei', 12))
         min_memory_entry.insert(0, '2G') 
-        min_memory_entry.place(x=150, y=200)
+        min_memory_entry.place(relx=0.3, rely=0.35)
 
-        status_label = Label(page_mc, text="", font=custom_font_0)
-        status_label.place(x=25, y=250)
+        status_label = customtkinter.CTkLabel(self.page_mc, text="", font=('Microsoft YaHei', 12))
+        status_label.place(relx=0.1, rely=0.45)
 
-        install_button = Button(page_mc, text='安装服务器', width=15, height=2, font=custom_font_0, command=lambda: minecraft_server_install(file_folder="minecraft/server", server_version=version_entry.get(),server_build=build_entry.get(), status_label=status_label))
-        install_button.place(x=25, y=250)
+        install_button = customtkinter.CTkButton(self.page_mc, text='安装服务器', font=('Microsoft YaHei', 12), command=lambda: minecraft_server_install(file_folder="minecraft/server", server_version=version_entry.get(), server_build=build_entry.get(), status_label=status_label))
+        install_button.place(relx=0.1, rely=0.55)
 
-        start_button = Button(page_mc, text='启动服务器', width=15, height=2, font=custom_font_0, command=lambda: minecraft_server_start(file_folder="minecraft/server", server_version=version_entry.get(),max_memory=max_memory_entry.get(), min_memory=min_memory_entry.get(), log_text=log_text, ))
+        start_button = customtkinter.CTkButton(self.page_mc, text='启动服务器', font=('Microsoft YaHei', 12), command=lambda: minecraft_server_start(file_folder="minecraft/server", server_version=version_entry.get(), max_memory=max_memory_entry.get(), min_memory=min_memory_entry.get(), log_text=log_text, ))
+        start_button.place(relx=0.55, rely=0.55)
 
-        start_button.place(x=250, y=250)
-        
-        log_text = Text(page_mc, width=48, height=7, state="disabled")
-        log_text.place(x=25, y=350)
+        log_text = Text(self.page_mc, width=48, height=7, state="disabled")
+        log_text.place(relx=0.1, rely=0.65)
 
-    def page_setting_group():
-        pass
-        # def change_theme(theme):
-        #     style.theme_use(theme)
+    def page_bilibili_group(self):
+        roomid = 7193936
+        bilibili_danmu = bilibili_live.BilibiliLive(roomid)
 
-        # label = ttk.Label(page_setting, text="选择主题:")
-        # label.place(x=25, y=25)
+        def bilibili_thread_start():
+            bilibili_thread = threading.Thread(target=bilibili_danmu.run, daemon=True)
+            bilibili_thread.start()
 
-        # # 列出可供选择的主题
-        # themes = ["cerulean", "cosmo", "darkly", "flatly", "journal", "litera", "lumen", "lux", "materia", "minty", "pulse", "sandstone", "simplex", "sketchy", "slate", "solar", "spacelab", "superhero", "united", "yeti"]
-        # theme_var = StringVar()
-        # theme_var.set(style.theme_use())
-        # theme_option = ttk.OptionMenu(page_setting, theme_var, *themes, command=change_theme)
-        # theme_option .place(x=125, y=25) 
+        def bilibili_thread_stop():
+            bilibili_danmu.stop_thread = True
 
-    def page_about_group():
-        icon_label = tkinter.Label(page_about, image=tk_image)
-        icon_label.place(x=250, y=100)
-        icon_label.config(bg=page_about['bg'])
-        
-        title_label = Label(page_about, text='MoYu ToolBox', font=custom_font_2)
-        title_label.place(x=150, y=250)
-        title_label.config(bg=page_about['bg'])
-        
-        copyright_label = Label(page_about, text='Powered BY ChatGPT   Developed BY WilsonVinson', font=custom_font_1)
-        copyright_label.place(x=100, y=500)
-        copyright_label.config(bg=page_about['bg'])
-    
-    page_home_group()
-    page_auto_group()
-    page_mc_group()
-    page_setting_group()
-    page_about_group()
-    
-    notebook.pack(expand=True, fill="both")
+        open_button = customtkinter.CTkButton(self.page_bilibili, text='开启', font=('Microsoft YaHei', 12), command=lambda: bilibili_thread_start())
+        open_button.place(relx=0.1, rely=0.55)
 
-    root.protocol("WM_DELETE_WINDOW", on_closing)
+        close_button = customtkinter.CTkButton(self.page_bilibili, text='关闭', font=('Microsoft YaHei', 12), command=lambda: bilibili_thread_stop())
+        close_button.place(relx=0.55, rely=0.55)
 
-    root.mainloop()
-
-def on_closing():
-    root.destroy()
-    try:
-        auto_input_thread.join()
-    except:
+    def page_setting_group(self):
         pass
 
-if __name__ == '__main__':
-
-    main_thread()
+    def page_about_group(self):
+        
+        image_file = Image.open("data/icon/icon_x500.png")
+        tk_image = ImageTk.PhotoImage(image_file)
+        icon_label = customtkinter.CTkLabel(self.page_about, text='',image=tk_image)
+        icon_label.place(relx=0.45, rely=0.3)
+        
+        title_label = customtkinter.CTkLabel(self.page_about, text='MoYu ToolBox', font=('Microsoft YaHei', 32))
+        title_label.place(relx=0.22, rely=0.5)
+        
+        copyright_label = customtkinter.CTkLabel(self.page_about, text='Powered BY ChatGPT   Developed BY WilsonVinson', font=('Microsoft YaHei', 10))
+        copyright_label.place(relx=0.2, rely=0.6)
     
-    sys.exit(0)
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()
