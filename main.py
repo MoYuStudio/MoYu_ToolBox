@@ -326,16 +326,20 @@ class App(customtkinter.CTk):
 
     def page_about_group(self):
         
+        about_frame = customtkinter.CTkFrame(self.page_about)
+        about_frame.place(relx=0.5, rely=0.5, anchor="center")
+        
         image_file = Image.open("data/icon/icon_x500.png")
         tk_image = ImageTk.PhotoImage(image_file)
-        icon_label = customtkinter.CTkLabel(self.page_about, text='',image=tk_image)
-        icon_label.place(relx=0.45, rely=0.3)
+        icon_label = customtkinter.CTkLabel(about_frame, text='',image=tk_image)
+        icon_label.pack()
         
-        title_label = customtkinter.CTkLabel(self.page_about, text='MoYu ToolBox', font=('Microsoft YaHei', 32))
-        title_label.place(relx=0.22, rely=0.5)
+        title_label = customtkinter.CTkLabel(about_frame, text='MoYu ToolBox', font=('Microsoft YaHei', 32))
+        title_label.pack()
         
-        copyright_label = customtkinter.CTkLabel(self.page_about, text='Powered BY ChatGPT   Developed BY WilsonVinson', font=('Microsoft YaHei', 10))
-        copyright_label.place(relx=0.2, rely=0.6)
+        copyright_label = customtkinter.CTkLabel(about_frame, text='Powered BY ChatGPT   Developed BY WilsonVinson', font=('Microsoft YaHei', 10))
+        copyright_label.pack()
+
     
 if __name__ == "__main__":
     app = App()
