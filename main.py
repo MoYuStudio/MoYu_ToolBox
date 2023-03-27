@@ -322,7 +322,22 @@ class App(customtkinter.CTk):
         close_button.place(relx=0.55, rely=0.2)
 
     def page_setting_group(self):
-        pass
+        def change_appearance_mode_event(new_appearance_mode: str):
+            customtkinter.set_appearance_mode(new_appearance_mode)
+        def change_scaling_event(new_scaling: str):
+            new_scaling_float = int(new_scaling.replace("%", "")) / 100
+            customtkinter.set_widget_scaling(new_scaling_float)
+            
+        appearance_mode_label = customtkinter.CTkLabel(self.page_setting, text="主题:", font=('Microsoft YaHei', 16), anchor="w")
+        appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
+        appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.page_setting, values=["Light", "Dark", "System"],
+                                                                       command=change_appearance_mode_event)
+        appearance_mode_optionemenu.grid(row=6, column=0, padx=20, pady=(10, 10))
+        scaling_label = customtkinter.CTkLabel(self.page_setting, text="UI比例(目前有BUG):", font=('Microsoft YaHei', 16), anchor="w")
+        scaling_label.grid(row=7, column=0, padx=20, pady=(10, 0))
+        scaling_optionemenu = customtkinter.CTkOptionMenu(self.page_setting, values=["80%", "90%", "100%", "110%", "120%"],
+                                                          command=change_scaling_event)
+        scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
 
     def page_about_group(self):
         
