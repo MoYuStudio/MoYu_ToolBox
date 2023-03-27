@@ -13,6 +13,10 @@ class MinecraftServer:
         self.server_build = server_build
         self.server_url = f"https://papermc.io/api/v2/projects/paper"
         
+        version_response = requests.get(f"{self.server_url}")
+        version_version_data = version_response.json()
+        self.server_version_list = version_version_data["versions"]
+        
         # self.file_path = os.path.join(file_folder, "server.jar")
         self.server_status = "未安装"
         self.output_label = None

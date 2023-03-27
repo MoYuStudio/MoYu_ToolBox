@@ -260,13 +260,13 @@ class App(customtkinter.CTk):
                 log_text.config(state="disabled")
                 return
             
-        global max_memory_entry, min_memory_entry, version_entry
-
-        version_label = customtkinter.CTkLabel(self.page_mc, text="服务器版本(留空自动最新)：", font=('Microsoft YaHei', 12))
+        global max_memory_entry, min_memory_entry, version_combobox
+        server = minecraft_server.MinecraftServer()
+        version_label = customtkinter.CTkLabel(self.page_mc, text="服务器版本：", font=('Microsoft YaHei', 12))
         version_label.place(relx=0.1, rely=0.05)
-        version_entry = customtkinter.CTkEntry(self.page_mc, width=150, font=('Microsoft YaHei', 12))
-        version_entry.insert(0, '') 
-        version_entry.place(relx=0.5, rely=0.05)
+        version_combobox = customtkinter.CTkComboBox(self.page_mc,values=server.server_version_list)
+        version_combobox.set(server.server_version_list[-1])
+        version_combobox.place(relx=0.3, rely=0.05)
         
         build_label = customtkinter.CTkLabel(self.page_mc, text="版本构建(留空自动最新)：", font=('Microsoft YaHei', 12))
         build_label.place(relx=0.1, rely=0.15)
@@ -289,10 +289,10 @@ class App(customtkinter.CTk):
         status_label = customtkinter.CTkLabel(self.page_mc, text="", font=('Microsoft YaHei', 12))
         status_label.place(relx=0.1, rely=0.45)
 
-        install_button = customtkinter.CTkButton(self.page_mc, text='安装服务器', font=('Microsoft YaHei', 12), command=lambda: minecraft_server_install(file_folder="minecraft/server", server_version=version_entry.get(), server_build=build_entry.get(), status_label=status_label))
+        install_button = customtkinter.CTkButton(self.page_mc, text='安装服务器', font=('Microsoft YaHei', 12), command=lambda: minecraft_server_install(file_folder="minecraft/server", server_version=version_combobox.get(), server_build=build_entry.get(), status_label=status_label))
         install_button.place(relx=0.1, rely=0.55)
 
-        start_button = customtkinter.CTkButton(self.page_mc, text='启动服务器', font=('Microsoft YaHei', 12), command=lambda: minecraft_server_start(file_folder="minecraft/server", server_version=version_entry.get(), max_memory=max_memory_entry.get(), min_memory=min_memory_entry.get(), log_text=log_text, ))
+        start_button = customtkinter.CTkButton(self.page_mc, text='启动服务器', font=('Microsoft YaHei', 12), command=lambda: minecraft_server_start(file_folder="minecraft/server", server_version=version_combobox.get(), max_memory=max_memory_entry.get(), min_memory=min_memory_entry.get(), log_text=log_text, ))
         start_button.place(relx=0.55, rely=0.55)
 
         log_text = Text(self.page_mc, width=48, height=7, state="disabled")
