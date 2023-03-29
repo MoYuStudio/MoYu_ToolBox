@@ -35,7 +35,7 @@ for code in codes:
     # 填充空值
     data['Position'].fillna(method='ffill', inplace=True)
 
-    initial_cash = 100000  # 初始现金，可以根据需要调整
+    initial_cash = 500000  # 初始现金，可以根据需要调整
     shares = 0  # 持有股票数
     cash = initial_cash
 
@@ -65,4 +65,4 @@ for code in codes:
     print(data.tail(7))
 
     # 将数据保存到Excel文件
-    data.to_excel('stock/'+code + "_fund_data.xlsx")
+    # data.to_excel('stock/'+code + "_fund_data.xlsx")
