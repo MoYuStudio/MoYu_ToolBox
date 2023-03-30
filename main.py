@@ -303,6 +303,7 @@ class App(customtkinter.CTk):
         def bilibili_thread_start():
             global bilibili_danmu
             bilibili_danmu = bilibili_live.BilibiliLive(roomid=roomid_entry.get())
+            bilibili_danmu.tts_engine = tts_engine_combobox.get()
             bilibili_thread = threading.Thread(target=bilibili_danmu.run, daemon=True)
             bilibili_thread.start()
 
@@ -314,12 +315,18 @@ class App(customtkinter.CTk):
         roomid_entry = customtkinter.CTkEntry(self.page_bilibili, width=200, font=('Microsoft YaHei', 16))
         roomid_entry.insert(0, '7193936') 
         roomid_entry.place(relx=0.3, rely=0.05)
+        
+        tts_engine_label = customtkinter.CTkLabel(self.page_bilibili, text="TTS引擎：", font=('Microsoft YaHei', 12))
+        tts_engine_label.place(relx=0.1, rely=0.15)
+        tts_engine_combobox = customtkinter.CTkComboBox(self.page_bilibili,values=['pyttsx3', 'google'])
+        tts_engine_combobox.set('pyttsx3')
+        tts_engine_combobox.place(relx=0.3, rely=0.15)
 
         open_button = customtkinter.CTkButton(self.page_bilibili, text='开启', font=('Microsoft YaHei', 16), command=lambda: bilibili_thread_start())
-        open_button.place(relx=0.1, rely=0.2)
+        open_button.place(relx=0.1, rely=0.6)
 
         close_button = customtkinter.CTkButton(self.page_bilibili, text='关闭', font=('Microsoft YaHei', 16), command=lambda: bilibili_thread_stop())
-        close_button.place(relx=0.55, rely=0.2)
+        close_button.place(relx=0.55, rely=0.6)
 
     def page_setting_group(self):
         def change_appearance_mode_event(new_appearance_mode: str):
@@ -328,7 +335,7 @@ class App(customtkinter.CTk):
             new_scaling_float = int(new_scaling.replace("%", "")) / 100
             customtkinter.set_widget_scaling(new_scaling_float)
             
-        appearance_mode_label = customtkinter.CTkLabel(self.page_setting, text="主题:", font=('Microsoft YaHei', 16), anchor="w")
+        appearance_mode_label = customtkinter.CTkLabel(self.page_setting, text="主题(目前有BUG):", font=('Microsoft YaHei', 16), anchor="w")
         appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
         appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.page_setting, values=["Light", "Dark", "System"],
                                                                        command=change_appearance_mode_event)

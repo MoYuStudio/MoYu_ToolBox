@@ -20,7 +20,7 @@ class BilibiliLive:
         self.last_timestamp = ''
         self.stop_thread = False
         
-        self.tts_engine = 'google' # [pyttsx3, google]
+        self.tts_engine = 'pyttsx3' # ['pyttsx3', 'google']
         
         self.pyttsx3_engine = pyttsx3.init()
         self.pyttsx3_engine.setProperty('voice', 1)
