@@ -4,6 +4,7 @@
 # pyinstaller --onefile --windowed --icon=data/icon/icon.ico main.py
 # pyinstaller --noconfirm --onedir --windowed --icon=data/icon/icon.ico --add-data "C:\Users\WilsonVinson\AppData\Local\Programs\Python\Python311\Lib\site-packages/customtkinter;customtkinter/"  "main.py"
 # https://www.lfd.uci.edu/~gohlke/pythonlibs
+# pip install -r requirements.txt
 
 import os
 import sys

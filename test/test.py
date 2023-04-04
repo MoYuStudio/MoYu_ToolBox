@@ -36,7 +36,10 @@ if target_window is not None:
     app_window.maximize()
 
     # 访问菜单
-    menu = app_window.menu()
-    print(menu)
+    # 获取窗口的所有子元素
+    all_elements = app_window.children()
+    # print(all_elements)
+    for element in all_elements:
+        element.print_control_identifiers()
 else:
     print(f"Window with class name '{target_class_name}' and title '{target_title}' not found.")
