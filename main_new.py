@@ -33,24 +33,42 @@ class App(customtkinter.CTk):
             page_auto = dlc.auto.PageAuto(self.tabview.tab("自动化"))
             
         if os.path.exists("dlc/bilibili.py"):
-            import dlc.auto
+            import dlc.bilibili
             self.tabview.add("B站")
-            page_auto = dlc.auto.PageAuto(self.tabview.tab("B站"))
+            page_auto = dlc.bilibili.PageBiliBili(self.tabview.tab("B站"))
             
         # self.tabview.add("B站")
         # self.tabview.add("MC")
-        # self.tabview.add("设置")
         
-        if len(self.tabview.children)-2 <= 0:
+        if len(self.tabview.children)-2 <= 1:
             self.tabview.add(" MoYu ToolBox ")
             
             info_label = customtkinter.CTkLabel(self.tabview.tab(" MoYu ToolBox "), text='安装任意DLC以开始', font=('Microsoft YaHei', 32))
             info_label.pack()
+            
+        self.tabview.add("设置")
+        self.page_setting_group()
 
         self.bind("<Configure>", self.on_window_resize)
 
     def on_window_resize(self, event):
         self.tabview.configure(width=event.width - 20, height=event.height - 10)
+        
+    def page_setting_group(self):
+        def change_appearance_mode_event(new_appearance_mode: str):
+            customtkinter.set_appearance_mode(new_appearance_mode)
+        def change_scaling_event(new_scaling: str):
+            new_scaling_float = int(new_scaling.replace("%", "")) / 100
+            customtkinter.set_widget_scaling(new_scaling_float)
+            
+        appearance_mode_label = customtkinter.CTkLabel(self.tabview.tab("设置"), text="主题(目前有BUG):", font=('Microsoft YaHei', 16), anchor="w")
+        appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
+        appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.tabview.tab("设置"), values=["Light", "Dark", "System"], command=change_appearance_mode_event)
+        appearance_mode_optionemenu.grid(row=6, column=0, padx=20, pady=(10, 10))
+        scaling_label = customtkinter.CTkLabel(self.tabview.tab("设置"), text="UI比例(目前有BUG):", font=('Microsoft YaHei', 16), anchor="w")
+        scaling_label.grid(row=7, column=0, padx=20, pady=(10, 0))
+        scaling_optionemenu = customtkinter.CTkOptionMenu(self.tabview.tab("设置"), values=["80%", "90%", "100%", "110%", "120%"], command=change_scaling_event)
+        scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
         
 if __name__ == "__main__":
     app = App()

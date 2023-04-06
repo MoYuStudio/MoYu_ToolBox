@@ -1,4 +1,5 @@
 
+import os
 import datetime
 import threading
 import tkinter
@@ -21,9 +22,10 @@ class PageAuto:
         self.tabview.add("自动输入")
         self.tabview.add("链式启动")
         
-        self.input_group()
+        self.auto_input_group()
+        self.auto_launch_group()
     
-    def input_group(self):
+    def auto_input_group(self):
 
         def start_recording(recorder_obj, status_label_var):
             global auto_input_thread
@@ -96,3 +98,22 @@ class PageAuto:
 
         clear_button = customtkinter.CTkButton(master=self.tabview.tab("自动输入"), text='清空记录', font=('Microsoft YaHei', 12), command=lambda: clear_records(recorder_obj))
         clear_button.place(relx=0.75, rely=0.7, anchor=tkinter.CENTER)
+        
+    def auto_launch_group(self):
+            def open_folder():
+                folder_path = f'{os.getcwd()}/data/auto_launch'
+                os.startfile(folder_path)
+            def open():
+                folder_path = f'{os.getcwd()}/data/auto_launch'
+                for file in os.listdir(folder_path):
+                    file_path = os.path.join(folder_path, file)
+                    os.startfile(file_path)
+                            
+            info_label = customtkinter.CTkLabel(master=self.tabview.tab("链式启动"), text='把快捷方式放入文件夹在需要时一键打开', font=('Microsoft YaHei', 16))
+            info_label.place(relx=0.05, rely=0.1, anchor=tkinter.W)
+            
+            open_folder_button = customtkinter.CTkButton(master=self.tabview.tab("链式启动"), text='打开文件夹', font=('Microsoft YaHei', 12), command=lambda: open_folder())
+            open_folder_button.place(relx=0.05, rely=0.3)
+            
+            open_button = customtkinter.CTkButton(master=self.tabview.tab("链式启动"), text='打开文件', font=('Microsoft YaHei', 12), command=lambda: open())
+            open_button.place(relx=0.55, rely=0.3)
