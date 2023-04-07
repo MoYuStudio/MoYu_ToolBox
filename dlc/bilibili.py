@@ -5,6 +5,7 @@ import threading
 import customtkinter
 
 import module.bilibili_live as bilibili_live
+import module.thread_plus as thread_plus
 
 class PageBiliBili:
     def __init__(self,page):
@@ -37,8 +38,8 @@ class PageBiliBili:
         self.open_button = customtkinter.CTkButton(self.page, text='开启', font=('Microsoft YaHei', 16), command=lambda: self.bilibili_thread_start())
         self.open_button.place(relx=0.1, rely=0.6)
 
-        # self.close_button = customtkinter.CTkButton(self.page, text='关闭', font=('Microsoft YaHei', 16), command=lambda: self.bilibili_thread_stop())
-        # self.close_button.place(relx=0.55, rely=0.6)
+        self.close_button = customtkinter.CTkButton(self.page, text='关闭', font=('Microsoft YaHei', 16), command=lambda: self.bilibili_thread_stop())
+        self.close_button.place(relx=0.55, rely=0.6)
     
     def bilibili_thread_start(self):
         global bilibili_danmu, bilibili_thread
@@ -46,10 +47,10 @@ class PageBiliBili:
         bilibili_danmu.tts_engine_voice = self.tts_engine_voice_entry.get()
         bilibili_danmu.tts_engine_rate = self.tts_engine_rate_entry.get()
         bilibili_danmu.tts_engine_volume = self.tts_engine_volume_entry.get()
-        bilibili_thread = threading.Thread(target=asyncio.run, args=(bilibili_danmu.run(),))
+        bilibili_thread = thread_plus.ThreadPlus(target=asyncio.run, args=(bilibili_danmu.run(),))
         bilibili_thread.start()
 
     def bilibili_thread_stop(self):
-        bilibili_thread.cancel()
-        bilibili_thread.join()
+        bilibili_thread.stop()
+        # bilibili_thread.join()
         

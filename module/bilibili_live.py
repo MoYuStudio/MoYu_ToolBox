@@ -80,7 +80,7 @@ class BilibiliLive:
         self.pyttsx3_engine.setProperty('voice', self.tts_engine_voice)
         self.pyttsx3_engine.setProperty('rate', self.tts_engine_rate)
         self.pyttsx3_engine.setProperty('volume', self.tts_engine_volume)
-        self.pyttsx3_engine.say(' 欢迎使用摸鱼哔哩哔哩弹幕姬')
+        self.pyttsx3_engine.say(' 欢迎使用摸鱼工具箱 哔哩哔哩弹幕姬 ')
         self.pyttsx3_engine.runAndWait()
         
         async with websockets.connect(self.uri) as websocket:
