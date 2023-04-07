@@ -1,6 +1,5 @@
-
-import threading
 import asyncio
+import threading
 
 class ThreadPlus(threading.Thread):
     def __init__(self, target=None, args=(), kwargs={}):
@@ -13,6 +12,17 @@ class ThreadPlus(threading.Thread):
 
     def stop(self):
         self._stop_event.set()
+        if self._coroutine_task:
+            self._coroutine_task.cancel()
+        # get a list of all currently active threads
+        threads = threading.enumerate()
+
+        # loop through the threads and stop each one
+        for thread in threads:
+            thread.stop()
+            thread.join()
+
+    def cancel(self):
         if self._coroutine_task:
             self._coroutine_task.cancel()
 

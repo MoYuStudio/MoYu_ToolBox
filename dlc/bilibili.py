@@ -42,15 +42,31 @@ class PageBiliBili:
         self.close_button.place(relx=0.55, rely=0.6)
     
     def bilibili_thread_start(self):
-        global bilibili_danmu, bilibili_thread
-        bilibili_danmu = bilibili_live.BilibiliLive(roomid=self.roomid_entry.get())
-        bilibili_danmu.tts_engine_voice = self.tts_engine_voice_entry.get()
-        bilibili_danmu.tts_engine_rate = self.tts_engine_rate_entry.get()
-        bilibili_danmu.tts_engine_volume = self.tts_engine_volume_entry.get()
-        bilibili_thread = thread_plus.ThreadPlus(target=asyncio.run, args=(bilibili_danmu.run(),))
-        bilibili_thread.start()
+        self.bilibili_danmu = bilibili_live.BilibiliLive(roomid=self.roomid_entry.get())
+        self.bilibili_danmu.tts_engine_voice = self.tts_engine_voice_entry.get()
+        self.bilibili_danmu.tts_engine_rate = self.tts_engine_rate_entry.get()
+        self.bilibili_danmu.tts_engine_volume = self.tts_engine_volume_entry.get()
+        self.bilibili_thread = thread_plus.ThreadPlus(target=asyncio.run, args=(self.bilibili_danmu.run(),))
+        self.bilibili_thread.start()
 
     def bilibili_thread_stop(self):
-        bilibili_thread.stop()
-        # bilibili_thread.join()
-        
+        if self.bilibili_thread:
+            self.bilibili_thread.stop()
+            # bilibili_thread.join()
+            self.bilibili_thread = None
+
+        # Get the running event loop
+        loop = asyncio.get_event_loop()
+
+        # Stop all running tasks
+        tasks = asyncio.all_tasks(loop=loop)
+        for task in tasks:
+            task.cancel()
+
+        # Run the event loop until all tasks are canceled
+        loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
+
+        # Stop the event loop
+        loop.stop()
+        loop.close()
+
