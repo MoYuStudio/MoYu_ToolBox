@@ -1,117 +1,95 @@
 
-import os
-import time
+import asyncio
 import json
-import requests
+import zlib
+
+import websockets
 import pyttsx3
-import threading
-from gtts import gTTS
-from io import BytesIO
-import pygame
 
 class BilibiliLive:
-    def __init__(self, roomid=7193936, sleep_time=1):
+    def __init__(self,roomid):
         self.roomid = roomid
-        self.sleep_time = sleep_time
-        self.url = f"https://api.live.bilibili.com/xlive/web-room/v1/dM/gethistory?roomid={roomid}"
+        self.uri = "wss://broadcastlv.chat.bilibili.com/sub"
+        self.data_raw = bytes.fromhex(self.encode(self.roomid))
         
-        self.danmuhistory = []
-        self.gifts = []
-        self.last_timestamp = ''
-        self.stop_thread = False
-        
-        self.tts_engine = 'pyttsx3' # ['pyttsx3', 'google']
-        
+    async def onmessage(self,ws):
+        while True:
+            greeting = await ws.recv()
+            self.decode(greeting)
+
+
+    async def sendHB(self,ws):
+        hb = "00000010001000010000000200000001"
+        while True:
+            await asyncio.sleep(30)
+            await ws.send(bytes.fromhex(hb))
+
+
+    def decode(self,data):
+        packetLen = int(data[:4].hex(), 16)
+        ver = int(data[6:8].hex(), 16)
+        op = int(data[8:12].hex(), 16)
+
+        if len(data) > packetLen:  # 防止
+            self.decode(data[packetLen:])
+            data = data[:packetLen]
+
+        if ver == 2:
+            data = zlib.decompress(data[16:])
+            self.decode(data)
+            return
+
+        if op == 5:
+            try:
+                jd = json.loads(data[16:].decode('utf-8', errors='ignore'))
+                
+                if jd['cmd'] == 'SEND_GIFT':  # 礼物
+                    print(str(jd["data"]["uname"]) + ": " + str(jd["data"]["giftName"]) + "X" + str(jd["data"]["num"]))
+                    self.pyttsx3_engine.say("感谢" + str(jd["data"]["uname"]) + "赠送了" + str(jd["data"]["num"]) + "个" + str(jd["data"]["giftName"]))
+                    self.pyttsx3_engine.runAndWait()
+                    
+                elif jd['cmd'] == 'SUPER_CHAT_MESSAGE_JPN':  # sc醒目提醒
+                    print(str(jd["data"]["user_info"]["uname"]) + ": " + str(jd["data"]["message"]))
+                    self.pyttsx3_engine.say("SC留言" + str(jd["data"]["user_info"]["uname"]) + "说:" + str(jd["data"]["message"]))
+                    self.pyttsx3_engine.runAndWait()
+                
+                elif jd['cmd'] == 'DANMU_MSG':  # 普通弹幕消息
+                    print(str(jd['info'][2][1]) + ": " + str(jd['info'][1]))
+                    self.pyttsx3_engine.say(str(jd['info'][2][1]) + "说" + str(jd['info'][1]))
+                    self.pyttsx3_engine.runAndWait()
+                
+            except Exception as e:
+                pass
+
+
+    def encode(self,roomid):
+        a = '{"roomid":' + str(roomid) + '}'
+        data = []
+        for s in a:
+            data.append(ord(s))
+        return "000000{}001000010000000700000001".format(hex(16 + len(data))[2:]) + "".join(
+            map(lambda x: x[2:], map(hex, data)))
+
+
+    async def run(self):
         self.pyttsx3_engine = pyttsx3.init()
         self.pyttsx3_engine.setProperty('voice', 1)
         self.pyttsx3_engine.setProperty('rate', 230)
-        self.pyttsx3_engine.setProperty('volume', 0.8)
+        self.pyttsx3_engine.setProperty('volume', 5)
+        self.pyttsx3_engine.say(' 欢迎使用摸鱼哔哩哔哩弹幕姬')
+        self.pyttsx3_engine.runAndWait()
         
-        self.google_language = 'zh-CN' #'zh-CN' 'zh-TW'
-        self.google_slow_audio_speed = False
-        pygame.mixer.init()
-        
+        async with websockets.connect(self.uri) as websocket:
+            await websocket.send(self.data_raw)
 
-    def show(self, danmulist):
-        for i in range(len(danmulist)):
-            print('[{0}] {1} : {2}'.format(danmulist[i]['timeline'], danmulist[i]['nickname'], danmulist[i]['text']))
-            
-            if self.tts_engine ==  'pyttsx3':
-                self.pyttsx3_engine.say(danmulist[i]['nickname'] + '说：' + danmulist[i]['text'])
-                self.pyttsx3_engine.runAndWait()
+            tasks = [asyncio.create_task(
+                self.sendHB(websocket)), asyncio.create_task(self.onmessage(websocket))]
+            await asyncio.gather(*tasks)
 
-            if self.tts_engine == 'google':
+        self.pyttsx3_engine.stop()
 
-                google_tts_audio = gTTS(text=' '+danmulist[i]['nickname'] + '说：' + danmulist[i]['text'], lang=self.google_language, slow=self.google_slow_audio_speed)
+if __name__ == '__main__':
 
-                audio_stream = BytesIO()
-                google_tts_audio.write_to_fp(audio_stream)
-                audio_stream.seek(0)
-
-                # 加载音频流
-                pygame.mixer.music.load(audio_stream)
-
-                # 播放音频文件
-                pygame.mixer.music.play()
-
-                # 等待音频播放结束
-                while pygame.mixer.music.get_busy():
-                    pygame.time.Clock().tick(10)
-
-    def fetch_danmu(self):
-        r = requests.get(self.url)
-        message = json.loads(r.text)
-        return message['data']['room']
-    
-    def fetch_gifts(self):
-        url = f"https://api.live.bilibili.com/gift/v2/live/receive_record?roomid={self.roomid}&page=1"
-        r = requests.get(url)
-        data = r.json()
-        if data["code"] == 0:
-            return data["data"]["list"]
-        else:
-            return []
-
-    def run(self):
-        initial_danmu = self.fetch_danmu()
-        if len(initial_danmu) > 0:
-            self.danmuhistory += initial_danmu
-            self.last_timestamp = self.danmuhistory[-1]['timeline']
-
-        while not self.stop_thread:
-            os.system("cls")
-            danmu_new = self.fetch_danmu()
-
-            if len(self.danmuhistory) == 0:
-                if len(danmu_new) == 1:
-                    self.danmuhistory += danmu_new
-                    self.show(self.danmuhistory)
-                time.sleep(self.sleep_time)
-                continue
-
-            new_danmaku_list = []
-            for i in range(len(danmu_new)):
-                if danmu_new[i]['timeline'] > self.last_timestamp:
-                    new_danmaku_list.append(danmu_new[i])
-
-            if new_danmaku_list:
-                self.last_timestamp = new_danmaku_list[-1]['timeline']
-                self.danmuhistory += new_danmaku_list
-                self.show(new_danmaku_list)
-                
-            new_gifts = self.fetch_gifts()
-            for gift in new_gifts:
-                if gift not in self.gifts:
-                    self.gifts.append(gift)
-                    thank_msg = f"{gift['uname']} 赠送了 {gift['num']} 个 {gift['gift_name']}，感谢支持！"
-                    self.engine.say(thank_msg)
-                    self.engine.runAndWait()
-
-            time.sleep(self.sleep_time)
-
-if __name__ == "__main__":
-    roomid = 7193936
+    roomid = 6136246 #7193936
     bilibili_danmu = BilibiliLive(roomid)
-    danmu_thread = threading.Thread(target=bilibili_danmu.run)
-    danmu_thread.start()
-    
+    asyncio.run(bilibili_danmu.run())

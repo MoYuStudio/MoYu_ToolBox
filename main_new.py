@@ -67,10 +67,13 @@ class App(customtkinter.CTk):
         appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
         appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.tabview.tab("设置"), values=["Light", "Dark", "System"], command=change_appearance_mode_event)
         appearance_mode_optionemenu.grid(row=6, column=0, padx=20, pady=(10, 10))
+        appearance_mode_optionemenu.set("System")
+        
         scaling_label = customtkinter.CTkLabel(self.tabview.tab("设置"), text="UI比例:", font=('Microsoft YaHei', 16), anchor="w")
         scaling_label.grid(row=7, column=0, padx=20, pady=(10, 0))
         scaling_optionemenu = customtkinter.CTkOptionMenu(self.tabview.tab("设置"), values=["80%", "90%", "100%", "110%", "120%"], command=change_scaling_event)
         scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
+        scaling_optionemenu.set("100%") 
         
 if __name__ == "__main__":
     app = App()
