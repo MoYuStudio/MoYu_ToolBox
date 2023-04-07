@@ -37,8 +37,8 @@ class PageBiliBili:
         self.open_button = customtkinter.CTkButton(self.page, text='开启', font=('Microsoft YaHei', 16), command=lambda: self.bilibili_thread_start())
         self.open_button.place(relx=0.1, rely=0.6)
 
-        self.close_button = customtkinter.CTkButton(self.page, text='关闭', font=('Microsoft YaHei', 16), command=lambda: self.bilibili_thread_stop())
-        self.close_button.place(relx=0.55, rely=0.6)
+        # self.close_button = customtkinter.CTkButton(self.page, text='关闭', font=('Microsoft YaHei', 16), command=lambda: self.bilibili_thread_stop())
+        # self.close_button.place(relx=0.55, rely=0.6)
     
     def bilibili_thread_start(self):
         global bilibili_danmu, bilibili_thread
