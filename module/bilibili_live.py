@@ -12,6 +12,10 @@ class BilibiliLive:
         self.uri = "wss://broadcastlv.chat.bilibili.com/sub"
         self.data_raw = bytes.fromhex(self.encode(self.roomid))
         
+        self.tts_engine_voice = 1
+        self.tts_engine_rate = 230
+        self.tts_engine_volume = 5
+        
     async def onmessage(self,ws):
         while True:
             greeting = await ws.recv()
@@ -73,9 +77,9 @@ class BilibiliLive:
 
     async def run(self):
         self.pyttsx3_engine = pyttsx3.init()
-        self.pyttsx3_engine.setProperty('voice', 1)
-        self.pyttsx3_engine.setProperty('rate', 230)
-        self.pyttsx3_engine.setProperty('volume', 5)
+        self.pyttsx3_engine.setProperty('voice', self.tts_engine_voice)
+        self.pyttsx3_engine.setProperty('rate', self.tts_engine_rate)
+        self.pyttsx3_engine.setProperty('volume', self.tts_engine_volume)
         self.pyttsx3_engine.say(' 欢迎使用摸鱼哔哩哔哩弹幕姬')
         self.pyttsx3_engine.runAndWait()
         

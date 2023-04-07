@@ -16,11 +16,23 @@ class PageBiliBili:
         # self.roomid_entry.insert(0, '7193936') 
         self.roomid_entry.place(relx=0.3, rely=0.05)
         
-        # self.tts_engine_label = customtkinter.CTkLabel(self.page, text="TTS引擎：", font=('Microsoft YaHei', 12))
-        # self.tts_engine_label.place(relx=0.1, rely=0.15)
-        # self.tts_engine_combobox = customtkinter.CTkComboBox(self.page,values=['pyttsx3', 'google'])
-        # self.tts_engine_combobox.set('pyttsx3')
-        # self.tts_engine_combobox.place(relx=0.3, rely=0.15)
+        self.tts_engine_voice_label = customtkinter.CTkLabel(self.page, text="音效：", font=('Microsoft YaHei', 12))
+        self.tts_engine_voice_label.place(relx=0.1, rely=0.15)
+        self.tts_engine_voice_entry = customtkinter.CTkEntry(self.page, width=100, font=('Microsoft YaHei', 16))
+        self.tts_engine_voice_entry.insert(0, '1') 
+        self.tts_engine_voice_entry.place(relx=0.3, rely=0.15)
+        
+        self.tts_engine_rate_label = customtkinter.CTkLabel(self.page, text="音调：", font=('Microsoft YaHei', 12))
+        self.tts_engine_rate_label.place(relx=0.1, rely=0.25)
+        self.tts_engine_rate_entry = customtkinter.CTkEntry(self.page, width=100, font=('Microsoft YaHei', 16))
+        self.tts_engine_rate_entry.insert(0, '230') 
+        self.tts_engine_rate_entry.place(relx=0.3, rely=0.25)
+        
+        self.tts_engine_volume_label = customtkinter.CTkLabel(self.page, text="音量：", font=('Microsoft YaHei', 12))
+        self.tts_engine_volume_label.place(relx=0.1, rely=0.35)
+        self.tts_engine_volume_entry = customtkinter.CTkEntry(self.page, width=100, font=('Microsoft YaHei', 16))
+        self.tts_engine_volume_entry.insert(0, '5') 
+        self.tts_engine_volume_entry.place(relx=0.3, rely=0.35)
 
         self.open_button = customtkinter.CTkButton(self.page, text='开启', font=('Microsoft YaHei', 16), command=lambda: self.bilibili_thread_start())
         self.open_button.place(relx=0.1, rely=0.6)
@@ -31,6 +43,9 @@ class PageBiliBili:
     def bilibili_thread_start(self):
         global bilibili_danmu, bilibili_thread
         bilibili_danmu = bilibili_live.BilibiliLive(roomid=self.roomid_entry.get())
+        bilibili_danmu.tts_engine_voice = self.tts_engine_voice_entry.get()
+        bilibili_danmu.tts_engine_rate = self.tts_engine_rate_entry.get()
+        bilibili_danmu.tts_engine_volume = self.tts_engine_volume_entry.get()
         bilibili_thread = threading.Thread(target=asyncio.run, args=(bilibili_danmu.run(),))
         bilibili_thread.start()
 
