@@ -35,12 +35,12 @@ class App(customtkinter.CTk):
         if os.path.exists("dlc/bilibili.py"):
             import dlc.bilibili
             self.tabview.add("B站")
-            page_auto = dlc.bilibili.PageBiliBili(self.tabview.tab("B站"))
+            page_bilibili = dlc.bilibili.PageBiliBili(self.tabview.tab("B站"))
 
         if os.path.exists("dlc/mc.py"):
             import dlc.mc
             self.tabview.add("MC")
-            page_auto = dlc.mc.PageMC(self.tabview.tab("MC"))
+            page_mc = dlc.mc.PageMC(self.tabview.tab("MC"))
         
         if len(self.tabview.children)-2 <= 1:
             self.tabview.add(" MoYu ToolBox ")

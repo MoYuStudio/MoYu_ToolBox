@@ -2,6 +2,7 @@
 import asyncio
 import json
 import zlib
+import threading
 
 import websockets
 import pyttsx3
@@ -11,9 +12,10 @@ class BilibiliLive:
         self.roomid = roomid
         self.uri = "wss://broadcastlv.chat.bilibili.com/sub"
         self.data_raw = bytes.fromhex(self.encode(self.roomid))
+        self.stop_event = threading.Event()
         
         self.tts_engine_voice = 1
-        self.tts_engine_rate = 230
+        self.tts_engine_rate = 180
         self.tts_engine_volume = 5
         
     async def onmessage(self,ws):
@@ -86,14 +88,41 @@ class BilibiliLive:
         async with websockets.connect(self.uri) as websocket:
             await websocket.send(self.data_raw)
 
-            tasks = [asyncio.create_task(
-                self.sendHB(websocket)), asyncio.create_task(self.onmessage(websocket))]
-            await asyncio.gather(*tasks)
+            self.tasks = [
+                asyncio.create_task(self.sendHB(websocket)),
+                asyncio.create_task(self.onmessage(websocket)),
+            ]
+
+            while not self.stop_event.is_set():
+                await asyncio.sleep(1)
+
+            # stop the tasks
+            for task in self.tasks:
+                task.cancel()
+
+            # wait for the tasks to finish
+            await asyncio.gather(*self.tasks, return_exceptions=True)
 
         self.pyttsx3_engine.stop()
 
+    def _run(self):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            loop.run_until_complete(self.run())
+        finally:
+            loop.run_until_complete(loop.shutdown_asyncgens())
+            loop.close()
+
+    def start(self):
+        self.thread = threading.Thread(target=self._run)
+        self.thread.start()
+
+    def stop(self):
+        self.stop_event.set()
+
 if __name__ == '__main__':
 
-    roomid = 6136246 #7193936
+    roomid = 7193936
     bilibili_danmu = BilibiliLive(roomid)
-    asyncio.run(bilibili_danmu.run())
+    asyncio.create_task(bilibili_danmu.run())
