@@ -16,7 +16,7 @@ class PageAuto:
         
         recorder_obj = autoinput_recorder.Recorder()
         
-        self.tabview = customtkinter.CTkTabview(self.page, width=350, height=350)
+        self.tabview = customtkinter.CTkTabview(self.page, width=550, height=350)
         self.tabview.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
         self.tabview.add("自动输入")
@@ -98,6 +98,9 @@ class PageAuto:
 
         clear_button = customtkinter.CTkButton(master=self.tabview.tab("自动输入"), text='清空记录', font=('Microsoft YaHei', 12), command=lambda: clear_records(recorder_obj))
         clear_button.place(relx=0.75, rely=0.7, anchor=tkinter.CENTER)
+        
+        self.page.columnconfigure(0, weight=1)
+        self.page.rowconfigure(0, weight=1)
         
     def auto_launch_group(self):
             def open_folder():

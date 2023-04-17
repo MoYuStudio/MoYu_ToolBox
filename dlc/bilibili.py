@@ -41,20 +41,21 @@ class PageBiliBili:
         self.close_button.place(relx=0.55, rely=0.6)
         
     def bilibili_thread(self):
-        
-        self.bilibili_danmu.start()
-        
+        self.bilibili_danmu.run()
+            
     def bilibili_thread_start(self):
         self.bilibili_danmu = bilibili_live.BilibiliLive(roomid=self.roomid_entry.get())
         self.bilibili_danmu.tts_engine_voice = self.tts_engine_voice_entry.get()
         self.bilibili_danmu.tts_engine_rate = self.tts_engine_rate_entry.get()
         self.bilibili_danmu.tts_engine_volume = self.tts_engine_volume_entry.get()
-        
+            
         self.threading = threading.Thread(target=self.bilibili_thread)
         self.threading.start()
 
     def bilibili_thread_stop(self):
-        if hasattr(self, 'bilibili_danmu'):
-            self.bilibili_danmu.stop_event.set()
-        if hasattr(self, 'threading'):
-            self.threading.join()
+        self.bilibili_danmu.stop_event.set()
+        try:
+            self.bilibili_danmu.ws.close()
+        except:
+            pass
+        self.threading.join()
