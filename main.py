@@ -2,6 +2,9 @@
 # === MoYuToolBox 摸鱼工具箱 ===
 #   Develop BY WilsonVinson   
 
+# pyinstaller --noconfirm --onedir --windowed --icon=data/icon/icon.ico --add-data "C:\Users\WilsonVinson\AppData\Local\Programs\Python\Python311\Lib\site-packages/customtkinter;customtkinter/"  "main.py"
+# pip install -r requirements.txt
+
 import os
 
 import customtkinter
