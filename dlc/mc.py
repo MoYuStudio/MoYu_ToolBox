@@ -47,14 +47,14 @@ class PageMC:
         log_text = tkinter.Text(self.page, width=48, height=7, state="disabled")
         log_text.place(relx=0.1, rely=0.65)
     
-    def minecraft_server_install(file_folder, server_version, server_build, status_label):
+    def minecraft_server_install(self,file_folder, server_version, server_build, status_label):
         global server
         status_label.configure(text="服务器安装中")
         server = minecraft_server.MinecraftServer(server_version=server_version, server_build=server_build)
         server.install_server()
         status_label.configure(text="服务器安装成功")
 
-    def minecraft_server_start(file_folder, server_version, max_memory, min_memory, log_text, output_label=None):
+    def minecraft_server_start(self, file_folder, server_version, max_memory, min_memory, log_text, output_label=None):
         global server
         server = minecraft_server.MinecraftServer(file_folder=file_folder, server_version=server_version)
 
@@ -65,5 +65,3 @@ class PageMC:
             log_text.insert(tkinter.END, "服务器未安装，请先安装服务器\n")
             log_text.config(state="disabled")
             return
-        
-    

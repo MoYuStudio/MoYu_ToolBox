@@ -55,12 +55,12 @@ class MinecraftServer:
             print(f"{jar_path} 已存在，无需下载。")
 
     def start_server(self, max_memory="4G", min_memory="2G", output_label=None):
-        jar_file = os.path.join(os.getcwd()+'/'+self.file_folder, f"core.jar")
+        jar_file = os.path.join(os.getcwd()+'/'+self.file_folder+'/'+f"core.jar")# 'minecraft/server'
         print(jar_file)
         if not os.path.exists(jar_file):
             print("服务器文件不存在，请先安装服务器")
             return
-        start_command = f"java -Xmx{max_memory} -Xms{min_memory} -jar {jar_file} nogui"
+        start_command = f"java -Xmx{max_memory} -Xms{min_memory} -jar {jar_file} nogui"# C:/Program Files/Eclipse Adoptium/jdk-17.0.6.10-hotspot/bin/java.exe
         process = subprocess.Popen(start_command, cwd=self.file_folder, stdout=subprocess.PIPE)
 
         self.server_status = "运行中"

@@ -14,7 +14,7 @@ class PageAuto:
     def __init__(self,page):
         self.page = page
         
-        recorder_obj = autoinput_recorder.Recorder()
+        self.recorder_obj = autoinput_recorder.Recorder()
         
         self.tabview = customtkinter.CTkTabview(self.page, width=550, height=350)
         self.tabview.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
@@ -80,10 +80,10 @@ class PageAuto:
         file_name_entry.insert(0, 'user') 
         file_name_entry.place(relx=0.65, rely=0.2, anchor=tkinter.CENTER)
 
-        record_button = customtkinter.CTkButton(master=self.tabview.tab("自动输入"), text='开始记录', font=('Microsoft YaHei', 12), command=lambda: start_recording(recorder_obj, status_label_var))
+        record_button = customtkinter.CTkButton(master=self.tabview.tab("自动输入"), text='开始记录', font=('Microsoft YaHei', 12), command=lambda: start_recording(self.recorder_obj, status_label_var))
         record_button.place(relx=0.25, rely=0.4, anchor=tkinter.CENTER)
 
-        stop_button = customtkinter.CTkButton(master=self.tabview.tab("自动输入"), text='结束记录', font=('Microsoft YaHei', 12), command=lambda: stop_recording(recorder_obj, status_label_var, file_name_entry))
+        stop_button = customtkinter.CTkButton(master=self.tabview.tab("自动输入"), text='结束记录', font=('Microsoft YaHei', 12), command=lambda: stop_recording(self.recorder_obj, status_label_var, file_name_entry))
         stop_button.place(relx=0.75, rely=0.4, anchor=tkinter.CENTER)
         
         loop_label = customtkinter.CTkLabel(master=self.tabview.tab("自动输入"), text='循环次数(-1无限循环):', font=('Microsoft YaHei', 12))
