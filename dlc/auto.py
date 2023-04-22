@@ -69,35 +69,43 @@ class PageAuto:
         global loop_var
         status_label_var = tkinter.StringVar()
         status_label_var.set('就绪')
-        status_label = customtkinter.CTkLabel(master=self.tabview.tab("自动输入"), textvariable=status_label_var, font=('Microsoft YaHei', 12))
-        status_label.place(relx=0.5, rely=0.1, anchor=tkinter.CENTER)
-
-        file_name_label = customtkinter.CTkLabel(master=self.tabview.tab("自动输入"), text='输入文件名:', font=('Microsoft YaHei', 12))
-        file_name_label.place(relx=0.1, rely=0.2, anchor=tkinter.W)
-        # file_name_label.config(bg=page_auto_input['bg'])
-
-        file_name_entry = customtkinter.CTkEntry(master=self.tabview.tab("自动输入"), width=200)
-        file_name_entry.insert(0, 'user') 
-        file_name_entry.place(relx=0.65, rely=0.2, anchor=tkinter.CENTER)
-
-        record_button = customtkinter.CTkButton(master=self.tabview.tab("自动输入"), text='开始记录', font=('Microsoft YaHei', 12), command=lambda: start_recording(self.recorder_obj, status_label_var))
-        record_button.place(relx=0.25, rely=0.4, anchor=tkinter.CENTER)
-
-        stop_button = customtkinter.CTkButton(master=self.tabview.tab("自动输入"), text='结束记录', font=('Microsoft YaHei', 12), command=lambda: stop_recording(self.recorder_obj, status_label_var, file_name_entry))
-        stop_button.place(relx=0.75, rely=0.4, anchor=tkinter.CENTER)
         
-        loop_label = customtkinter.CTkLabel(master=self.tabview.tab("自动输入"), text='循环次数(-1无限循环):', font=('Microsoft YaHei', 12))
-        loop_label.place(relx=0.1, rely=0.5)
+        status_label = customtkinter.CTkLabel(master=self.tabview.tab("自动输入"), textvariable=status_label_var, font=('Microsoft YaHei', 12))
+        status_label.place(relx=0.15, rely=0.05, anchor=tkinter.CENTER)
+        
+        file_name_label = customtkinter.CTkLabel(master=self.tabview.tab("自动输入"), text='创建新文件:', font=('Microsoft YaHei', 14))
+        file_name_label.place(relx=0.1, rely=0.15, anchor=tkinter.W)
+        # file_name_label.config(bg=page_auto_input['bg'])
+        
+        file_name_entry = customtkinter.CTkEntry(master=self.tabview.tab("自动输入"), width=200)
+        file_name_entry.insert(0, '') 
+        file_name_entry.place(relx=0.45, rely=0.15, anchor=tkinter.CENTER)
+        
+        file_label = customtkinter.CTkLabel(master=self.tabview.tab("自动输入"), text="选择已有的文件：", font=('Microsoft YaHei', 14))
+        file_label.place(relx=0.1, rely=0.25)
+        file_list = ["user"]
+        file_combobox = customtkinter.CTkComboBox(master=self.tabview.tab("自动输入"),values=file_list)
+        file_combobox.set(file_list[0])
+        file_combobox.place(relx=0.35, rely=0.25)
+
+        record_button = customtkinter.CTkButton(master=self.tabview.tab("自动输入"), text='开始记录', font=('Microsoft YaHei', 14), command=lambda: start_recording(self.recorder_obj, status_label_var))
+        record_button.place(relx=0.25, rely=0.45, anchor=tkinter.CENTER)
+
+        stop_button = customtkinter.CTkButton(master=self.tabview.tab("自动输入"), text='结束记录', font=('Microsoft YaHei', 14), command=lambda: stop_recording(self.recorder_obj, status_label_var, file_name_entry))
+        stop_button.place(relx=0.55, rely=0.45, anchor=tkinter.CENTER)
+        
+        loop_label = customtkinter.CTkLabel(master=self.tabview.tab("自动输入"), text='循环次数(-1无限循环):', font=('Microsoft YaHei', 14))
+        loop_label.place(relx=0.1, rely=0.55)
 
         loop_var = tkinter.IntVar(value=1)
-        loop_spinbox = customtkinter.CTkEntry(master=self.tabview.tab("自动输入"), width=150, font=('Microsoft YaHei', 12), textvariable=loop_var)
-        loop_spinbox.place(relx=0.5, rely=0.5)
+        loop_spinbox = customtkinter.CTkEntry(master=self.tabview.tab("自动输入"), width=150, font=('Microsoft YaHei', 14), textvariable=loop_var)
+        loop_spinbox.place(relx=0.4, rely=0.55)
 
-        execute_button = customtkinter.CTkButton(master=self.tabview.tab("自动输入"), text='开始执行', font=('Microsoft YaHei', 12), command=lambda: start_execution(status_label_var,file_name_entry))
-        execute_button.place(relx=0.25, rely=0.7, anchor=tkinter.CENTER)
+        execute_button = customtkinter.CTkButton(master=self.tabview.tab("自动输入"), text='开始执行', font=('Microsoft YaHei', 14), command=lambda: start_execution(status_label_var,file_combobox))
+        execute_button.place(relx=0.25, rely=0.75, anchor=tkinter.CENTER)
 
-        clear_button = customtkinter.CTkButton(master=self.tabview.tab("自动输入"), text='清空记录', font=('Microsoft YaHei', 12), command=lambda: clear_records(recorder_obj))
-        clear_button.place(relx=0.75, rely=0.7, anchor=tkinter.CENTER)
+        clear_button = customtkinter.CTkButton(master=self.tabview.tab("自动输入"), text='清空记录', font=('Microsoft YaHei', 14), command=lambda: clear_records(self.recorder_obj))
+        clear_button.place(relx=0.55, rely=0.75, anchor=tkinter.CENTER)
         
         self.page.columnconfigure(0, weight=1)
         self.page.rowconfigure(0, weight=1)
