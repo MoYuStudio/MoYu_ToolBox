@@ -79,8 +79,8 @@ class PageAuto:
         file_name_label.place(relx=0.1, rely=0.15, anchor=tkinter.W)
         # file_name_label.config(bg=page_auto_input['bg'])
         
-        file_name_entry = customtkinter.CTkEntry(master=self.tabview.tab("自动输入"), width=200)
-        file_name_entry.insert(0, '') 
+        file_name_entry = customtkinter.CTkEntry(master=self.tabview.tab("自动输入"), width=200, placeholder_text='不创建或覆盖则留空')
+        # file_name_entry.insert(0, '请输入文件名')
         file_name_entry.place(relx=0.45, rely=0.15, anchor=tkinter.CENTER)
         
         file_label = customtkinter.CTkLabel(master=self.tabview.tab("自动输入"), text="选择已有的文件：", font=('Microsoft YaHei', 14))
@@ -113,20 +113,20 @@ class PageAuto:
         self.page.rowconfigure(0, weight=1)
         
     def auto_launch_group(self):
-            def open_folder():
-                folder_path = f'{os.getcwd()}/data/auto_launch'
-                os.startfile(folder_path)
-            def open():
-                folder_path = f'{os.getcwd()}/data/auto_launch'
-                for file in os.listdir(folder_path):
-                    file_path = os.path.join(folder_path, file)
-                    os.startfile(file_path)
-                            
-            info_label = customtkinter.CTkLabel(master=self.tabview.tab("链式启动"), text='把快捷方式放入文件夹在需要时一键打开', font=('Microsoft YaHei', 16))
-            info_label.place(relx=0.05, rely=0.1, anchor=tkinter.W)
-            
-            open_folder_button = customtkinter.CTkButton(master=self.tabview.tab("链式启动"), text='打开文件夹', font=('Microsoft YaHei', 12), command=lambda: open_folder())
-            open_folder_button.place(relx=0.05, rely=0.3)
-            
-            open_button = customtkinter.CTkButton(master=self.tabview.tab("链式启动"), text='打开文件', font=('Microsoft YaHei', 12), command=lambda: open())
-            open_button.place(relx=0.55, rely=0.3)
+        def open_folder():
+            folder_path = f'{os.getcwd()}/data/auto_launch'
+            os.startfile(folder_path)
+        def open():
+            folder_path = f'{os.getcwd()}/data/auto_launch'
+            for file in os.listdir(folder_path):
+                file_path = os.path.join(folder_path, file)
+                os.startfile(file_path)
+                        
+        info_label = customtkinter.CTkLabel(master=self.tabview.tab("链式启动"), text='把快捷方式放入文件夹在需要时一键打开', font=('Microsoft YaHei', 16))
+        info_label.place(relx=0.05, rely=0.1, anchor=tkinter.W)
+        
+        open_folder_button = customtkinter.CTkButton(master=self.tabview.tab("链式启动"), text='打开文件夹', font=('Microsoft YaHei', 12), command=lambda: open_folder())
+        open_folder_button.place(relx=0.05, rely=0.3)
+        
+        open_button = customtkinter.CTkButton(master=self.tabview.tab("链式启动"), text='打开文件', font=('Microsoft YaHei', 12), command=lambda: open())
+        open_button.place(relx=0.55, rely=0.3)
