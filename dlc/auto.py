@@ -16,6 +16,8 @@ class PageAuto:
         
         self.recorder_obj = autoinput_recorder.Recorder()
         
+        self.folder_path = "data/json"  # Replace this with the path to your folder
+        
         self.tabview = customtkinter.CTkTabview(self.page, width=550, height=350)
         self.tabview.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
@@ -83,7 +85,7 @@ class PageAuto:
         
         file_label = customtkinter.CTkLabel(master=self.tabview.tab("自动输入"), text="选择已有的文件：", font=('Microsoft YaHei', 14))
         file_label.place(relx=0.1, rely=0.25)
-        file_list = ["user"]
+        file_list = [os.path.splitext(file)[0] for file in os.listdir(self.folder_path) if file.endswith(".json")]
         file_combobox = customtkinter.CTkComboBox(master=self.tabview.tab("自动输入"),values=file_list)
         file_combobox.set(file_list[0])
         file_combobox.place(relx=0.35, rely=0.25)
