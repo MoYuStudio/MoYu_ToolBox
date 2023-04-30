@@ -12,7 +12,7 @@ class PageBiliBili:
         
         self.roomid_label = customtkinter.CTkLabel(self.page, text="房间号：", font=('Microsoft YaHei', 16))
         self.roomid_label.place(relx=0.1, rely=0.05)
-        self.roomid_entry = customtkinter.CTkEntry(self.page, width=200, font=('Microsoft YaHei', 16))
+        self.roomid_entry = customtkinter.CTkEntry(self.page, width=200,placeholder_text='如 7193936')
         # self.roomid_entry.insert(0, '7193936') 
         self.roomid_entry.place(relx=0.3, rely=0.05)
         

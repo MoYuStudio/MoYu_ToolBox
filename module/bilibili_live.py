@@ -16,7 +16,7 @@ class BilibiliLive:
 
         self.tts_engine_voice = 1
         self.tts_engine_rate = 180
-        self.tts_engine_volume = 3
+        self.tts_engine_volume = 0.5
 
     def on_message(self, ws, message):
         self.decode(message)

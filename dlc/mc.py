@@ -17,11 +17,11 @@ class PageMC:
         version_combobox.set(server.server_version_list[-1])
         version_combobox.place(relx=0.3, rely=0.05)
         
-        build_label = customtkinter.CTkLabel(self.page, text="版本构建(留空自动最新)：", font=('Microsoft YaHei', 12))
+        build_label = customtkinter.CTkLabel(self.page, text="版本构建：", font=('Microsoft YaHei', 12))
         build_label.place(relx=0.1, rely=0.15)
-        build_entry = customtkinter.CTkEntry(self.page, width=150, font=('Microsoft YaHei', 12))
-        build_entry.insert(0, '') 
-        build_entry.place(relx=0.5, rely=0.15)
+        build_entry = customtkinter.CTkEntry(self.page, width=150, placeholder_text='非必要，留空自动最新')
+        # build_entry.insert(0, '') 
+        build_entry.place(relx=0.3, rely=0.15)
 
         max_memory_label = customtkinter.CTkLabel(self.page, text="最大内存：", font=('Microsoft YaHei', 12))
         max_memory_label.place(relx=0.1, rely=0.25)

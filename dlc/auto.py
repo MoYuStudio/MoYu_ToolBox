@@ -79,7 +79,7 @@ class PageAuto:
         file_name_label.place(relx=0.1, rely=0.15, anchor=tkinter.W)
         # file_name_label.config(bg=page_auto_input['bg'])
         
-        file_name_entry = customtkinter.CTkEntry(master=self.tabview.tab("自动输入"), width=200, placeholder_text='不创建或覆盖则留空')
+        file_name_entry = customtkinter.CTkEntry(master=self.tabview.tab("自动输入"), width=200, placeholder_text='不创建或不覆盖则留空')
         # file_name_entry.insert(0, '请输入文件名')
         file_name_entry.place(relx=0.45, rely=0.15, anchor=tkinter.CENTER)
         
